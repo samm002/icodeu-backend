@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Update Blog By Id</title>
+  <link rel='stylesheet' href='../../public/styles/style.css' />
+  <script src="https://cdn.ckeditor.com/ckeditor5/41.2.1/classic/ckeditor.js"></script>
+</head>
+<body>
+  <h1>Update Blog by Id</h1>
+  <form action="/blogs/{{id}}" method="PATCH">
+    <div>
+      <label>Title</label>
+      <input type="text" name="title" value="{{ blog.title }}">
+    </div>
+    <div>
+      <label>Description</label>
+      <textarea name="description" id="editor">{{{ blog.content }}}</textarea>
+    </div>
+    
+    <div>
+      <input type="submit" value="Update Data">
+    </div>
+  </form> 
+  <script>
+      class MyCustomUploadAdapter {
+        constructor(loader) {
+          this.loader = loader;
+        }
+
+        upload() {
+          return this.loader.file
+            .then(file => new Promise((resolve, reject) => {
+              const xhr = new XMLHttpRequest();
+              xhr.open('POST', '/blogs/upload', true);
+              xhr.responseType = 'json';
+              
+              xhr.onload = () => {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                  resolve({
+                    default: xhr.response.url
+                  });
+                } else {
+                  reject(xhr.response);
+                }
+              };
+
+              xhr.onerror = () => {
+                reject(xhr.response);
+              };
+
+              const formData = new FormData();
+              formData.append('upload', file);
+
+              xhr.send(formData);
+            }));
+        }
+
+        abort() {
+          // Implement abort functionality if necessary
+        }
+      }
+
+      ClassicEditor .create(document.querySelector('#editor'), { 
+        ckfinder: {
+          uploadUrl: "/blogs/upload" 
+          } 
+        }).then(editor => {
+          editor.plugins.get('FileRepository').createUploadAdapter = loader => {
+            return new MyCustomUploadAdapter(loader);
+          };
+        }).catch(error => {
+          console.error('CKEditor error:', error); 
+        });
+    </script>
+</body>
+</html>
