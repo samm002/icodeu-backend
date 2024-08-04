@@ -17,8 +17,24 @@ import { CreateBlogDto } from './dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UpdateBlogDto } from './dto/update-blog.dto';
 import { diskStorage } from 'multer';
-import { basename, extname } from 'path';
+import * as path from 'path';
 import { sanitizeString } from '../common/service/sanitizeString';
+import * as fs from 'fs';
+
+const storage = diskStorage({
+  destination: (req, file, callback) => {
+    const tmpDir = path.join(__dirname, 'tmp');
+    if (!fs.existsSync(tmpDir)) {
+      fs.mkdirSync(tmpDir);
+    }
+    callback(null, tmpDir);
+  },
+  filename: (req, file, callback) => {
+    const fileExtension = path.extname(file.originalname);
+    const fileName = sanitizeString(path.basename(file.originalname, fileExtension));
+    callback(null, `${fileName}-${Date.now()}${fileExtension}`);
+  },
+});
 
 @Controller('blogs')
 export class BlogsController {
@@ -29,7 +45,7 @@ export class BlogsController {
   createCkeditorBlog() {
     return { content: 'ckeditor' };
   }
-  
+
   @Get('ckeditor/all')
   @Render('blogs/view-all-blog')
   async viewAllCkeditorBlog() {
@@ -97,28 +113,86 @@ export class BlogsController {
   //   console.log(file)
   // }
 
+  // @Post('upload')
+  // @UseInterceptors(
+  //   FileInterceptor('upload', {
+  //     storage: diskStorage({
+  //       destination: 'public/images',
+  //       filename: (req, file, callback) => {
+  //         console.log(file)
+  //         const fileExtension = extname(file.originalname);
+  //         const fileName = sanitizeString(
+  //           basename(file.originalname, fileExtension),
+  //         );
+  //         callback(null, `${fileName}-${Date.now()}${fileExtension}`);
+  //       },
+  //     }),
+  //   }),
+  // )
+  // uploadFile(@UploadedFile() file: Express.Multer.File) {
+  //   console.log(file);
+  //   const url = `http://localhost:3000/public/images/${file.filename}`
+  //   return {
+  //     filename: file.filename,
+  //     uploaded: 1,
+  //     url
+  //   };
+  // }
+
+  // @Post('upload')
+  // @UseInterceptors(
+  //   FileInterceptor('upload', {
+  //     storage: diskStorage({
+  //       destination: (req, file, callback) => {
+  //         callback(null, './tmp'); // Use a temporary directory
+  //       },
+  //       filename: (req, file, callback) => {
+  //         const fileExtension = extname(file.originalname);
+  //         const fileName = sanitizeString(
+  //           basename(file.originalname, fileExtension),
+  //         );
+  //         callback(null, `${fileName}-${Date.now()}${fileExtension}`);
+  //       },
+  //     }),
+  //   }),
+  // )
+  // async uploadFile(@UploadedFile() file: Express.Multer.File) {
+  //   try {
+  //     // Read the file content
+  //     const fileContent = file.buffer;
+
+  //     // Determine the MIME type
+  //     const contentType = mime.getType(file.originalname) || 'application/octet-stream';
+
+  //     // Upload the file to S3
+  //     const result = await this..uploadFile(file.originalname, fileContent, contentType);
+
+  //     // Return the file details and URL
+  //     return {
+  //       filename: file.originalname,
+  //       uploaded: 1,
+  //       url: result.url,
+  //     };
+  //   } catch (error) {
+  //     console.error('Error uploading file:', error);
+  //     throw new Error('Failed to upload file');
+  //   }
+  // }
+
   @Post('upload')
-  @UseInterceptors(
-    FileInterceptor('upload', {
-      storage: diskStorage({
-        destination: 'public/images',
-        filename: (req, file, callback) => {
-          const fileExtension = extname(file.originalname);
-          const fileName = sanitizeString(
-            basename(file.originalname, fileExtension),
-          );
-          callback(null, `${fileName}-${Date.now()}${fileExtension}`);
-        },
-      }),
-    }),
-  )
-  uploadFile(@UploadedFile() file: Express.Multer.File) {
+  @UseInterceptors(FileInterceptor('upload', { storage }))
+  async uploadFile(@UploadedFile() file: Express.Multer.File) {
     console.log(file);
-    const url = `http://localhost:3000/public/images/${file.filename}`
-    return {
-      filename: file.originalname, 
-      uploaded: 1, 
-      url
-    };
+    try {
+      const result = await this.blogService.uploadFile(file);
+      return {
+        filename: file.originalname,
+        uploaded: 1,
+        url: result.url,
+      };
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      throw new Error('Failed to upload file');
+    }
   }
 }

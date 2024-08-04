@@ -5,7 +5,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import * as argon from 'argon2';
-import * as bcrypt from 'bcrypt';
 
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { LoginDto } from './dto';

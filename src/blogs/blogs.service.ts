@@ -2,10 +2,14 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateBlogDto } from './dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
+import { CommonService } from 'src/common/common.service';
 
 @Injectable()
 export class BlogsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private common: CommonService,
+  ) {}
 
   async getAllBlog() {
     const blogs = await this.prisma.blog.findMany();
@@ -77,18 +81,18 @@ export class BlogsService {
     });
   }
 
-  async upload(file: Express.Multer.File) {
-    try {
-      return {
-        originalname: file.originalname,
-        filename: file.filename,
-        size: file.size,
-        mimetype: file.mimetype,
-      };
-    } catch (error) {
-      throw error;
-    }
-  }
+  // async upload(file: Express.Multer.File) {
+  //   try {
+  //     return {
+  //       originalname: file.originalname,
+  //       filename: file.filename,
+  //       size: file.size,
+  //       mimetype: file.mimetype,
+  //     };
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
 
   async viewCkeditorBlog(blogId: number) {
     const blog = await this.prisma.blog.findUnique({
@@ -101,5 +105,14 @@ export class BlogsService {
       throw new NotFoundException(`Blog with id : ${blogId} not found`);
 
     return blog;
+  }
+
+  async uploadFile(file: Express.Multer.File): Promise<{ url: string }> {
+    try {
+      const result = await this.common.uploadFile(file, 'blogs');
+      return result;
+    } catch (error) {
+      throw new Error(`Error uploading file: ${error.message}`);
+    }
   }
 }
