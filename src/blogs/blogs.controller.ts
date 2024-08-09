@@ -125,7 +125,6 @@ export class BlogsController {
   async uploadFile(
     @UploadedFile() file: Express.Multer.File,
   ): Promise<CkEditorResponse> {
-    console.log(file);
     try {
       const result = await this.blogService.uploadFile(file);
       return {

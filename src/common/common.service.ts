@@ -37,7 +37,7 @@ export class CommonService {
       params: {
         ACL: 'public-read',
         Bucket: this.config.get('S3_BUCKET'),
-        Key: `images/${folderName}/${Date.now().toString()}-${file.filename}`,
+        Key: `images/${folderName}/${file.filename}`,
         Body: fileStream,
         ContentType: contentType,
       },
