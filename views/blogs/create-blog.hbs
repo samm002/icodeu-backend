@@ -35,7 +35,7 @@
           return this.loader.file
             .then(file => new Promise((resolve, reject) => {
               const xhr = new XMLHttpRequest();
-              xhr.open('POST', '/blogs/upload', true);
+              xhr.open('POST', 'api/v1/blogs/upload', true);
               xhr.responseType = 'json';
               
               xhr.onload = () => {
@@ -66,7 +66,7 @@
 
       ClassicEditor .create(document.querySelector('#editor'), { 
         ckfinder: {
-          uploadUrl: "/blogs/upload" 
+          uploadUrl: "api/v1/blogs/upload" 
           } 
         }).then(editor => {
           editor.plugins.get('FileRepository').createUploadAdapter = loader => {

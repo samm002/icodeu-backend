@@ -26,8 +26,8 @@
           <td>{{title}}</td>
           <td>{{{content}}}</td>
           <td>
-            <a href="/blogs/ckeditor/{{id}}" class="btn btn-sm btn-info">Detail</a>
-            <a href="/blogs/ckeditor/{{id}}/edit" class="btn btn-sm btn-warning">Edit</a>
+            <a href="api/v1/blogs/ckeditor/{{id}}" class="btn btn-sm btn-info">Detail</a>
+            <a href="api/v1/blogs/ckeditor/{{id}}/edit" class="btn btn-sm btn-warning">Edit</a>
             <button class="btn btn-sm btn-danger" onclick="deleteBlog({{id}})">Delete</button>
           </td>
         </tr>
@@ -38,7 +38,7 @@
   <script>
     function deleteBlog(id) {
       if (confirm('Are you sure you want to delete this blog?')) {
-        fetch(`/blogs/${id}`, {
+        fetch(`api/v1/blogs/${id}`, {
           method: 'DELETE',
         })
         .then(response => {
