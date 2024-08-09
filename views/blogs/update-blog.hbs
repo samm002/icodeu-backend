@@ -10,14 +10,15 @@
 </head>
 <body>
   <h1>Update Blog by Id</h1>
-  <form action="/blogs/{{id}}" method="PATCH">
+  <form id='updateBlog' method="POST">
+    <input type="hidden" name="_method" value="PATCH">
     <div>
       <label>Title</label>
-      <input type="text" name="title" value="{{ blog.title }}">
+      <input type="title" name="title" value="{{ blog.title }}">
     </div>
     <div>
-      <label>Description</label>
-      <textarea name="description" id="editor">{{{ blog.content }}}</textarea>
+      <label>Content</label>
+      <textarea name="content" id="editor">{{{ blog.content }}}</textarea>
     </div>
     
     <div>
@@ -25,55 +26,99 @@
     </div>
   </form> 
   <script>
-      class MyCustomUploadAdapter {
-        constructor(loader) {
-          this.loader = loader;
-        }
+    let editorInstance;
 
-        upload() {
-          return this.loader.file
-            .then(file => new Promise((resolve, reject) => {
-              const xhr = new XMLHttpRequest();
-              xhr.open('POST', 'api/v1/blogs/upload', true);
-              xhr.responseType = 'json';
-              
-              xhr.onload = () => {
-                if (xhr.status >= 200 && xhr.status < 300) {
-                  resolve({
-                    default: xhr.response.url
-                  });
-                } else {
-                  reject(xhr.response);
-                }
-              };
+    ClassicEditor.create(document.querySelector('#editor'), { 
+      ckfinder: {
+        uploadUrl: `${window.location.origin}/api/v1/blogs/upload` 
+      } 
+    }).then(editor => {
+      editorInstance = editor; // Store the editor instance
+    }).catch(error => {
+      console.error('CKEditor error:', error); 
+    });
 
-              xhr.onerror = () => {
-                reject(xhr.response);
-              };
+    document.getElementById('updateBlog').addEventListener('submit', async (event) => {
+      event.preventDefault(); // Prevent default form submission
 
-              const formData = new FormData();
-              formData.append('upload', file);
-
-              xhr.send(formData);
-            }));
-        }
-
-        abort() {
-          // Implement abort functionality if necessary
-        }
+      // Check if editorInstance is defined
+      if (!editorInstance) {
+        alert('CKEditor is not initialized.');
+        return;
       }
 
-      ClassicEditor .create(document.querySelector('#editor'), { 
-        ckfinder: {
-          uploadUrl: "api/v1/blogs/upload" 
-          } 
-        }).then(editor => {
-          editor.plugins.get('FileRepository').createUploadAdapter = loader => {
-            return new MyCustomUploadAdapter(loader);
-          };
-        }).catch(error => {
-          console.error('CKEditor error:', error); 
+      const form = event.target;
+      const formData = new FormData(form);
+      formData.set('content', editorInstance.getData()); // Update 'content' with CKEditor data
+      const method = formData.get('_method') || 'PATCH'; // Get method from form data
+
+      // Convert FormData to URLSearchParams
+      const data = new URLSearchParams(formData);
+      data.delete('_method'); // Remove _method field
+
+      const uploadBlogEndpoint = document.getElementById('updateBlog').action = `${window.location.origin}/api/v1/blogs/{{id}}`;
+
+      try {
+        const response = await fetch(uploadBlogEndpoint, {
+          method: method, // Use the method from form data
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: data,
         });
-    </script>
+
+        if (response.ok) {
+          const result = await response.json();
+          window.location.href = `${window.location.origin}/api/v1/blogs/{{id}}`; // Redirect on success
+        } else {
+          const error = await response.json();
+          console.error('Error:', error);
+          alert('Error updating blog');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error updating blog');
+      }
+    });
+
+    class MyCustomUploadAdapter {
+      constructor(loader) {
+        this.loader = loader;
+      }
+
+      upload() {
+        return this.loader.file
+          .then(file => new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', 'upload', true);
+            xhr.responseType = 'json';
+            
+            xhr.onload = () => {
+              if (xhr.status >= 200 && xhr.status < 300) {
+                resolve({
+                  default: xhr.response.url
+                });
+              } else {
+                reject(xhr.response);
+              }
+            };
+
+            xhr.onerror = () => {
+              reject(xhr.response);
+            };
+
+            const formData = new FormData();
+            formData.append('upload', file);
+
+            xhr.send(formData);
+          }));
+      }
+
+      abort() {
+        // Implement abort functionality if necessary
+      }
+    }
+  </script>
 </body>
 </html>

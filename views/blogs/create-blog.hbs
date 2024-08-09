@@ -11,7 +11,8 @@
   </head>
   <body>
     <h1>Create Blog</h1>
-    <form action='/blogs' method='POST'>
+    <form id='createBlog' method='POST'>
+      
       <div>
         <label>Title</label>
         <input type='text' name='title' />
@@ -26,6 +27,8 @@
       </div>
     </form>
     <script>
+      document.getElementById('createBlog').action = `${window.location.origin}/api/v1/blogs`;
+
       class MyCustomUploadAdapter {
         constructor(loader) {
           this.loader = loader;
@@ -35,7 +38,7 @@
           return this.loader.file
             .then(file => new Promise((resolve, reject) => {
               const xhr = new XMLHttpRequest();
-              xhr.open('POST', 'api/v1/blogs/upload', true);
+              xhr.open('POST', 'upload', true);
               xhr.responseType = 'json';
               
               xhr.onload = () => {
@@ -66,7 +69,7 @@
 
       ClassicEditor .create(document.querySelector('#editor'), { 
         ckfinder: {
-          uploadUrl: "api/v1/blogs/upload" 
+          uploadUrl: "upload" 
           } 
         }).then(editor => {
           editor.plugins.get('FileRepository').createUploadAdapter = loader => {

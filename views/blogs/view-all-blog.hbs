@@ -10,6 +10,11 @@
 </head>
 <body>
   <div class="container">
+    <!-- Button to add a new blog -->
+    <div class="p-2 mb-3">
+      <a id="addNewBlogBtn" class="btn btn-primary">Add New Blog</a>
+    </div>
+
     <table class="table table-striped">
       <thead>
         <tr>
@@ -26,8 +31,8 @@
           <td>{{title}}</td>
           <td>{{{content}}}</td>
           <td>
-            <a href="api/v1/blogs/ckeditor/{{id}}" class="btn btn-sm btn-info">Detail</a>
-            <a href="api/v1/blogs/ckeditor/{{id}}/edit" class="btn btn-sm btn-warning">Edit</a>
+            <a href="#" class="btn btn-sm btn-info" onclick="viewBlog({{id}})">Detail</a>
+            <a href="#" class="btn btn-sm btn-warning" onclick="editBlog({{id}})">Edit</a>
             <button class="btn btn-sm btn-danger" onclick="deleteBlog({{id}})">Delete</button>
           </td>
         </tr>
@@ -35,15 +40,27 @@
       </tbody>
     </table>
   </div>
+
   <script>
+    const baseUrl = `${window.location.origin}/api/v1`;
+    document.getElementById('addNewBlogBtn').href = `${baseUrl}/blogs/ckeditor`;
+
+    function viewBlog(id) {
+      window.location.href = `${baseUrl}/blogs/ckeditor/${id}`;
+    }
+
+    function editBlog(id) {
+      window.location.href = `${baseUrl}/blogs/ckeditor/${id}/edit`;
+    }
+
     function deleteBlog(id) {
       if (confirm('Are you sure you want to delete this blog?')) {
-        fetch(`api/v1/blogs/${id}`, {
+        fetch(`${baseUrl}/blogs/${id}`, {
           method: 'DELETE',
         })
         .then(response => {
           if (response.ok) {
-            window.location.reload(); // Reload the page or handle the UI update
+            window.location.reload();
           } else {
             alert('Error deleting blog');
           }

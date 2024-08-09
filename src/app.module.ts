@@ -14,8 +14,8 @@ import { BlogsModule } from './blogs/blogs.module';
 import { PriceDetailsModule } from './price-details/price-details.module';
 import { ProductsModule } from './products/products.module';
 import { RolesModule } from './roles/roles.module';
-import { UsersModule } from './users/users.module';
 import { ServicesModule } from './services/services.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -23,8 +23,8 @@ import { ServicesModule } from './services/services.module';
       isGlobal: true,
     }),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..'), // Adjust the path to your public folder
-      renderPath: 'public',
+      rootPath: join(__dirname, '..', 'public'),
+      // renderPath: 'public',  // Adjust the path to your public folder
     }),
     PrismaModule,
     S3Module,

@@ -4,8 +4,6 @@ import { Upload } from '@aws-sdk/lib-storage';
 import * as fs from 'fs';
 
 import { S3Service } from '../s3/s3.service';
-import path from 'path';
-import { sanitizeString } from './utils/sanitizeString.utils';
 
 @Injectable()
 export class CommonService {
