@@ -1,3 +1,9 @@
+-- CreateEnum
+CREATE TYPE "ProductType" AS ENUM ('single', 'multi');
+
+-- CreateEnum
+CREATE TYPE "ServiceType" AS ENUM ('single', 'multi');
+
 -- CreateTable
 CREATE TABLE "users" (
     "id" SERIAL NOT NULL,
@@ -25,7 +31,7 @@ CREATE TABLE "roles" (
 );
 
 -- CreateTable
-CREATE TABLE "productPrices" (
+CREATE TABLE "priceDetails" (
     "id" SERIAL NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -33,10 +39,12 @@ CREATE TABLE "productPrices" (
     "description" TEXT,
     "price" DOUBLE PRECISION NOT NULL,
     "discount" DOUBLE PRECISION,
+    "discountedPrice" DOUBLE PRECISION,
     "features" TEXT[],
-    "productId" INTEGER NOT NULL,
+    "productId" INTEGER,
+    "serviceId" INTEGER,
 
-    CONSTRAINT "productPrices_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "priceDetails_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -44,11 +52,12 @@ CREATE TABLE "products" (
     "id" SERIAL NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "type" TEXT NOT NULL,
+    "type" "ProductType" NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT,
-    "price" DOUBLE PRECISION NOT NULL,
+    "price" DOUBLE PRECISION,
     "discount" DOUBLE PRECISION,
+    "discountedPrice" DOUBLE PRECISION,
     "features" TEXT[],
 
     CONSTRAINT "products_pkey" PRIMARY KEY ("id")
@@ -59,10 +68,12 @@ CREATE TABLE "services" (
     "id" SERIAL NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "type" "ServiceType" NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT,
-    "price" DOUBLE PRECISION NOT NULL,
+    "price" DOUBLE PRECISION,
     "discount" DOUBLE PRECISION,
+    "discountedPrice" DOUBLE PRECISION,
     "features" TEXT[],
 
     CONSTRAINT "services_pkey" PRIMARY KEY ("id")
@@ -90,7 +101,10 @@ CREATE UNIQUE INDEX "roles_name_key" ON "roles"("name");
 ALTER TABLE "users" ADD CONSTRAINT "users_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "roles"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "productPrices" ADD CONSTRAINT "productPrices_productId_fkey" FOREIGN KEY ("productId") REFERENCES "products"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "priceDetails" ADD CONSTRAINT "priceDetails_productId_fkey" FOREIGN KEY ("productId") REFERENCES "products"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "priceDetails" ADD CONSTRAINT "priceDetails_serviceId_fkey" FOREIGN KEY ("serviceId") REFERENCES "services"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "blogs" ADD CONSTRAINT "blogs_author_fkey" FOREIGN KEY ("author") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;

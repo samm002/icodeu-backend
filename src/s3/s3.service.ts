@@ -1,6 +1,6 @@
-import { S3Client } from '@aws-sdk/client-s3';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { S3Client } from '@aws-sdk/client-s3';
 
 @Injectable()
 export class S3Service extends S3Client {
@@ -10,7 +10,7 @@ export class S3Service extends S3Client {
         accessKeyId: config.get('AWS_ACCESS_KEY_ID'),
         secretAccessKey: config.get('AWS_SECRET_ACCESS_KEY'),
       },
-      region: config.get('AWS_REGION'),
+      region: config.get('S3_REGION'),
     });
   }
 }

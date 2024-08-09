@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
+import { MulterModule } from '@nestjs/platform-express';
+
 import { BlogsController } from './blogs.controller';
 import { BlogsService } from './blogs.service';
-import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
-    MulterModule.register({ dest: '../public/image' }),
+    MulterModule.register({ dest: '../public/image' }), // for local store image
   ],
   controllers: [BlogsController],
-  providers: [BlogsService]
+  providers: [BlogsService],
 })
 export class BlogsModule {}

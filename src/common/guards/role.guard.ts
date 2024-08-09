@@ -1,7 +1,8 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { RolesService } from '../../roles/roles.service';
+
 import { Roles } from '../decorators';
+import { RolesService } from '../../roles/roles.service';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -25,7 +26,7 @@ export class RolesGuard implements CanActivate {
     ]);
 
     if (isPublic) return true;
-    
+
     const roles = this.reflector.getAll(Roles, [
       context.getClass(),
       context.getHandler(),

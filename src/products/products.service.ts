@@ -1,65 +1,86 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { Product } from '@prisma/client';
+
 import { CreateProductDto, UpdateProductDto } from './dto';
+import { CommonService } from '../common/common.service';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class ProductsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private common: CommonService,
+  ) {}
 
-  async getAllProduct() {
+  async getAllProduct(): Promise<Product[]> {
     const products = await this.prisma.product.findMany({
       include: {
         productPrices: true,
       },
     });
-
     return products;
   }
 
-  async getProductById(productId: number) {
-    const product = await this.prisma.product.findUnique({
-      where: {
-        id: productId,
-      },
-      include: {
-        productPrices: true,
-      },
-    });
-
-    if (!product)
-      throw new NotFoundException(`Product with id : ${productId} not found`);
+  async getProductById(productId: number): Promise<Product> {
+    const product = this.findProductById(productId);
 
     return product;
   }
 
-  async createProduct(dto: CreateProductDto) {
+  async createProduct(dto: CreateProductDto): Promise<Product> {
+    if (dto.type !== 'multi' && !dto.price) {
+      throw new BadRequestException('Please input price');
+    }
+
+    const discountedPrice =
+      dto.price && dto.discount
+        ? this.common.countDiscount(dto.price, dto.discount)
+        : dto.price || dto.discount;
+
     const product = await this.prisma.product.create({
       data: {
         type: dto.type,
         name: dto.name,
-        price: dto.price,
-        ...dto,
+        discountedPrice: discountedPrice,
       },
     });
 
     return product;
   }
 
-  async updateProductById(productId: number, dto: UpdateProductDto) {
-    const product = await this.prisma.product.findUnique({
-      where: {
-        id: productId,
-      },
-    });
+  async updateProductById(
+    productId: number,
+    dto: UpdateProductDto,
+  ): Promise<Product> {
+    const product = await this.findProductById(productId);
 
-    if (!product)
-      throw new NotFoundException(`Product with id : ${productId} not found`);
+    if (
+      dto.type !== 'multi' &&
+      product.type !== 'multi' &&
+      !dto.price &&
+      !product.price
+    ) {
+      throw new BadRequestException('Please input price');
+    }
 
-    return this.prisma.product.update({
+    const price = dto.price ?? product.price;
+    const discount = dto.discount ?? product.discount;
+
+    const discountedPrice =
+      price && discount
+        ? this.common.countDiscount(price, discount)
+        : price || discount;
+
+    return await this.prisma.product.update({
       where: {
         id: productId,
       },
       data: {
+        discountedPrice: discountedPrice,
         ...dto,
       },
       include: {
@@ -68,7 +89,17 @@ export class ProductsService {
     });
   }
 
-  async deleteProductById(productId: number) {
+  async deleteProductById(productId: number): Promise<Product> {
+    await this.findProductById(productId);
+
+    return await this.prisma.product.delete({
+      where: {
+        id: productId,
+      },
+    });
+  }
+
+  private async findProductById(productId: number): Promise<Product> {
     const product = await this.prisma.product.findUnique({
       where: {
         id: productId,
@@ -78,10 +109,6 @@ export class ProductsService {
     if (!product)
       throw new NotFoundException(`Product with id : ${productId} not found`);
 
-    return this.prisma.product.delete({
-      where: {
-        id: productId,
-      },
-    });
+    return product;
   }
 }

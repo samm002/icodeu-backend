@@ -9,40 +9,70 @@ import {
   ParseIntPipe,
   UseGuards,
 } from '@nestjs/common';
+import { Role } from '@prisma/client';
+
+import { CreateRoleDto, UpdateRoleDto } from './dto';
 import { RolesService } from './roles.service';
-import { CreateRoleDto } from './dto/create-role.dto';
-import { UpdateRoleDto } from './dto/update-role.dto';
-import { JwtGuard, RolesGuard } from '../common/guards';
 import { Roles } from '../common/decorators';
+import { ResponseStatus, Role as ROLE } from '../common/enums';
+import { JwtGuard, RolesGuard } from '../common/guards';
+import { ResponsePayload } from '../common/interfaces';
 
 @UseGuards(JwtGuard, RolesGuard)
-@Roles(['admin'])
+@Roles([ROLE.ADMIN])
 @Controller('roles')
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
   @Get()
-  getAllRole() {
-    return this.rolesService.getAllRole();
+  async getAllRole(): Promise<ResponsePayload<Role[]>> {
+    return {
+      status: ResponseStatus.SUCCESS,
+      message: `Get All Role`,
+      data: await this.rolesService.getAllRole(),
+    };
   }
-  
+
   @Get(':id')
-  getRoleById(@Param("id", ParseIntPipe) roleId: number) {
-    return this.rolesService.getRoleById(roleId);
+  async getRoleById(
+    @Param('id', ParseIntPipe) roleId: number,
+  ): Promise<ResponsePayload<Role>> {
+    return {
+      status: ResponseStatus.SUCCESS,
+      message: `Get Role by id ${roleId}`,
+      data: await this.rolesService.getRoleById(roleId),
+    };
   }
-  
+
   @Post()
-  createRole(@Body() dto: CreateRoleDto) {
-    return this.rolesService.createRole(dto);
+  async createRole(@Body() dto: CreateRoleDto): Promise<ResponsePayload<Role>> {
+    return {
+      status: ResponseStatus.SUCCESS,
+      message: `Create New Role`,
+      data: await this.rolesService.createRole(dto),
+    };
   }
 
   @Patch(':id')
-  updateRoleById(@Param("id", ParseIntPipe) roleId: number, @Body() dto: UpdateRoleDto) {
-    return this.rolesService.updateRoleById(roleId, dto);
+  async updateRoleById(
+    @Param('id', ParseIntPipe) roleId: number,
+    @Body() dto: UpdateRoleDto,
+  ): Promise<ResponsePayload<Role>> {
+    return {
+      status: ResponseStatus.SUCCESS,
+      message: `Update Role by id ${roleId}`,
+      data: await this.rolesService.updateRoleById(roleId, dto),
+    };
   }
 
   @Delete(':id')
-  deleteRoleById(@Param("id", ParseIntPipe) roleId: number) {
-    return this.rolesService.deleteRoleById(roleId);
+  async deleteRoleById(
+    @Param('id', ParseIntPipe) roleId: number,
+  ): Promise<ResponsePayload<Role>> {
+    return {
+      status: ResponseStatus.SUCCESS,
+      message: `Delete Role by id ${roleId}`,
+      data: await this.rolesService.deleteRoleById(roleId),
+    };
   }
 }

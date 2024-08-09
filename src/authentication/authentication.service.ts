@@ -4,16 +4,16 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import * as argon from 'argon2';
-
-import { CreateUserDto } from '../users/dto/create-user.dto';
-import { LoginDto } from './dto';
-import { Role } from '../common/enums';
-import { PrismaService } from '../prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+
+import { LoginDto } from './dto';
+import { Role } from '../common/enums';
 import { JwtPayload, Tokens } from '../common/interfaces';
+import { PrismaService } from '../prisma/prisma.service';
+import { CreateUserDto } from '../users/dto';
 
 @Injectable()
 export class AuthenticationService {
@@ -23,15 +23,7 @@ export class AuthenticationService {
     private config: ConfigService,
   ) {}
   async register(dto: CreateUserDto): Promise<Tokens> {
-    const userRole = await this.prisma.role.findUnique({
-      where: {
-        name: Role.USER,
-      },
-    });
-
-    if (!userRole) throw new BadRequestException('User role not found');
-
-    const roleId = userRole.id;
+    const userRoleId = await this.getUserRoleId();
     const password = await argon.hash(dto.password);
 
     try {
@@ -39,7 +31,7 @@ export class AuthenticationService {
         data: {
           email: dto.email,
           password,
-          roleId,
+          roleId: userRoleId,
         },
       });
 
@@ -60,57 +52,60 @@ export class AuthenticationService {
     }
   }
 
-  async login(dto: LoginDto) {
-    const user = await this.prisma.user.findUnique({
-      where: {
-        email: dto.email,
-      },
-    });
+  async login(dto: LoginDto): Promise<Tokens> {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: {
+          email: dto.email,
+        },
+      });
 
-    if (!user)
-      throw new NotFoundException(
-        `Invalid credential, no user found with email : ${dto.email}`,
-      );
+      if (!user)
+        throw new NotFoundException(
+          `Invalid credential, no user found with email : ${dto.email}`,
+        );
 
-    const passwordMatches = await argon.verify(user.password, dto.password);
+      const passwordMatches = await argon.verify(user.password, dto.password);
 
-    if (!passwordMatches)
-      throw new BadRequestException(
-        "Invalid credential, password didn't match!",
-      );
+      if (!passwordMatches)
+        throw new BadRequestException(
+          "Invalid credential, password didn't match!",
+        );
 
-    const tokens = await this.signToken(user.id, user.email);
+      const tokens = await this.signToken(user.id, user.email);
 
-    await this.updateRefreshToken(user.id, tokens.refresh_token);
+      await this.updateRefreshToken(user.id, tokens.refresh_token);
 
-    return tokens;
+      return tokens;
+    } catch (error) {
+      throw error;
+    }
   }
 
-  async signToken(userId: number, email: string): Promise<Tokens> {
-    const atSecret = this.config.get('JWT_AT_SECRET');
-    const rtSecret = this.config.get('JWT_RT_SECRET');
-    const expiresIn = this.config.get('JWT_AT_EXPIRE');
+  async logout(userId: number): Promise<string> {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: {
+          id: userId,
+        },
+      });
 
-    const payload: JwtPayload = {
-      sub: userId,
-      email,
-    };
+      if (!user.refreshToken)
+        throw new BadRequestException('Refresh token expired (exceeding 1 day)');
 
-    const [at, rt] = await Promise.all([
-      this.jwt.signAsync(payload, {
-        secret: atSecret,
-        expiresIn: expiresIn,
-      }),
-      this.jwt.signAsync(payload, {
-        secret: rtSecret,
-        expiresIn: 60 * 60 * 12 * 7, // 1 week
-      }),
-    ]);
+      await this.prisma.user.updateMany({
+        where: {
+          id: userId,
+        },
+        data: {
+          refreshToken: null,
+        },
+      });
 
-    return {
-      access_token: at,
-      refresh_token: rt,
-    };
+      return 'Logged Out Success';
+    } catch (error) {
+      throw error;
+    }
   }
 
   async refreshTokens(userId: number, refreshToken: string): Promise<Tokens> {
@@ -120,7 +115,10 @@ export class AuthenticationService {
       },
     });
 
-    if (!user) throw new ForbiddenException('User not found');
+    if (!user)
+      throw new NotFoundException(
+        `Invalid credential, no user found with id : ${userId}`,
+      );
 
     const refreshTokenMatches = await argon.verify(
       user.refreshToken,
@@ -137,7 +135,47 @@ export class AuthenticationService {
     return tokens;
   }
 
-  async updateRefreshToken(userId: number, refreshToken: string) {
+  private async getUserRoleId(): Promise<number> {
+    const userRole = await this.prisma.role.findUnique({
+      where: {
+        name: Role.USER,
+      },
+    });
+
+    if (!userRole) throw new BadRequestException('User role not found');
+
+    return userRole.id;
+  }
+
+  private async signToken(userId: number, email: string): Promise<Tokens> {
+    const atSecret = this.config.get('JWT_AT_SECRET');
+    const rtSecret = this.config.get('JWT_RT_SECRET');
+    const atExpire = this.config.get('JWT_AT_EXPIRE');
+    const rtExpire = this.config.get('JWT_RT_EXPIRE');
+
+    const payload: JwtPayload = {
+      sub: userId,
+      email,
+    };
+
+    const [at, rt] = await Promise.all([
+      this.jwt.signAsync(payload, {
+        secret: atSecret,
+        expiresIn: atExpire,
+      }),
+      this.jwt.signAsync(payload, {
+        secret: rtSecret,
+        expiresIn: rtExpire,
+      }),
+    ]);
+
+    return {
+      access_token: at,
+      refresh_token: rt,
+    };
+  }
+
+  private async updateRefreshToken(userId: number, refreshToken: string) {
     const hash = await argon.hash(refreshToken);
     await this.prisma.user.update({
       where: {

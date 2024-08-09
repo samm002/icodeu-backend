@@ -1,23 +1,35 @@
-import { IsArray, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
+import {
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
+
+import { ServiceType } from '../../common/enums';
 
 export class CreateServiceDto {
   @IsString()
   @IsNotEmpty()
-  name: string
-  
+  type: ServiceType;
+
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
   @IsString()
   @IsOptional()
-  description: string
-  
-  @IsNumber()
-  @IsNotEmpty()
-  price: number
-  
+  description: string;
+
   @IsNumber()
   @IsOptional()
-  discount: number
-  
+  price: number;
+
+  @IsNumber()
+  @IsOptional()
+  discount: number;
+
   @IsArray()
   @IsOptional()
-  features: string[]
+  features: string[];
 }

@@ -1,27 +1,35 @@
-import { IsArray, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
+import {
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
+
+import { ProductType } from '../../common/enums';
 
 export class CreateProductDto {
   @IsString()
   @IsNotEmpty()
-  type: string
-  
+  type: ProductType;
+
   @IsString()
   @IsNotEmpty()
-  name: string
-  
+  name: string;
+
   @IsString()
   @IsOptional()
-  description: string
-  
-  @IsNumber()
-  @IsNotEmpty()
-  price: number
-  
+  description: string;
+
   @IsNumber()
   @IsOptional()
-  discount: number
-  
+  price: number;
+
+  @IsNumber()
+  @IsOptional()
+  discount: number;
+
   @IsArray()
   @IsOptional()
-  features: string[]
+  features: string[];
 }

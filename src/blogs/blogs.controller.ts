@@ -11,35 +11,22 @@ import {
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
-import { GetUser } from 'src/common/decorators';
-import { BlogsService } from './blogs.service';
-import { CreateBlogDto } from './dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { UpdateBlogDto } from './dto/update-blog.dto';
-import { diskStorage } from 'multer';
-import * as path from 'path';
-import { sanitizeString } from '../common/service/sanitizeString';
-import * as fs from 'fs';
+import { Blog } from '@prisma/client';
 
-const storage = diskStorage({
-  destination: (req, file, callback) => {
-    const tmpDir = path.join(__dirname, 'tmp');
-    if (!fs.existsSync(tmpDir)) {
-      fs.mkdirSync(tmpDir);
-    }
-    callback(null, tmpDir);
-  },
-  filename: (req, file, callback) => {
-    const fileExtension = path.extname(file.originalname);
-    const fileName = sanitizeString(path.basename(file.originalname, fileExtension));
-    callback(null, `${fileName}-${Date.now()}${fileExtension}`);
-  },
-});
+import { BlogsService } from './blogs.service';
+import { CreateBlogDto, UpdateBlogDto } from './dto';
+import { GetUser } from '../common/decorators';
+import { CkEditorResponse, ResponsePayload } from '../common/interfaces';
+import { storage } from '../common/utils';
+import { ResponseStatus } from 'src/common/enums';
 
+// Blogs route is still under testing, no guard applied
 @Controller('blogs')
 export class BlogsController {
   constructor(private readonly blogService: BlogsService) {}
 
+  // CKEditor Route
   @Get('ckeditor')
   @Render('blogs/create-blog')
   createCkeditorBlog() {
@@ -67,26 +54,45 @@ export class BlogsController {
     return { id: blogId, blog };
   }
 
+  // Upload image test route
   @Get('upload-image')
   @Render('upload-image')
   uploadImageView() {
     return { content: 'ckeditor' };
   }
 
+  // Blog route
   @Get()
-  getAllRole() {
-    return this.blogService.getAllBlog();
+  async getAllBlog(): Promise<ResponsePayload<Blog[]>> {
+    return {
+      status: ResponseStatus.SUCCESS,
+      message: `Get All Blog`,
+      data: await this.blogService.getAllBlog(),
+    };
   }
 
   @Get(':id')
-  getBlogById(@Param('id', ParseIntPipe) blogId: number) {
-    return this.blogService.getBlogById(blogId);
+  async getBlogById(
+    @Param('id', ParseIntPipe) blogId: number,
+  ): Promise<ResponsePayload<Blog>> {
+    return {
+      status: ResponseStatus.SUCCESS,
+      message: `Get Blog by id ${blogId}`,
+      data: await this.blogService.getBlogById(blogId),
+    };
   }
 
   @Post()
-  // async createBlog(@GetUser('sub') userId: number, dto: CreateBlogDto) {
-  async createBlogById(userId: number, @Body() dto: CreateBlogDto) {
-    return this.blogService.createBlog(userId, dto);
+  // async createBlog(@GetUser('sub') userId: number, dto: CreateBlogDto) { // used when blog fixed
+  async createBlogById(
+    userId: number,
+    @Body() dto: CreateBlogDto,
+  ): Promise<ResponsePayload<Blog>> {
+    return {
+      status: ResponseStatus.SUCCESS,
+      message: `Create New Blog`,
+      data: await this.blogService.createBlog(userId, dto),
+    };
   }
 
   @Patch(':id')
@@ -94,94 +100,31 @@ export class BlogsController {
     userId: number,
     @Param('id', ParseIntPipe) blogId: number,
     @Body() dto: UpdateBlogDto,
-  ) {
-    return this.blogService.updateBlogById(userId, blogId, dto);
+  ): Promise<ResponsePayload<Blog>> {
+    return {
+      status: ResponseStatus.SUCCESS,
+      message: `Update Blog by Id ${blogId}`,
+      data: await this.blogService.updateBlogById(userId, blogId, dto),
+    };
   }
 
   @Delete(':id')
   async deleteBlogById(
     userId: number,
     @Param('id', ParseIntPipe) blogId: number,
-    @Body() dto: UpdateBlogDto,
-  ) {
-    return this.blogService.deleteBlogById(userId, blogId, dto);
+  ): Promise<ResponsePayload<Blog>> {
+    return {
+      status: ResponseStatus.SUCCESS,
+      message: `Delete Blog by Id ${blogId}`,
+      data: await this.blogService.deleteBlogById(userId, blogId),
+    };
   }
-
-  // @Post('upload')
-  // @UseInterceptors(FileInterceptor('upload'))
-  // async uploadFile(@UploadedFile() file: Express.Multer.File) {
-  //   console.log(file)
-  // }
-
-  // @Post('upload')
-  // @UseInterceptors(
-  //   FileInterceptor('upload', {
-  //     storage: diskStorage({
-  //       destination: 'public/images',
-  //       filename: (req, file, callback) => {
-  //         console.log(file)
-  //         const fileExtension = extname(file.originalname);
-  //         const fileName = sanitizeString(
-  //           basename(file.originalname, fileExtension),
-  //         );
-  //         callback(null, `${fileName}-${Date.now()}${fileExtension}`);
-  //       },
-  //     }),
-  //   }),
-  // )
-  // uploadFile(@UploadedFile() file: Express.Multer.File) {
-  //   console.log(file);
-  //   const url = `http://localhost:3000/public/images/${file.filename}`
-  //   return {
-  //     filename: file.filename,
-  //     uploaded: 1,
-  //     url
-  //   };
-  // }
-
-  // @Post('upload')
-  // @UseInterceptors(
-  //   FileInterceptor('upload', {
-  //     storage: diskStorage({
-  //       destination: (req, file, callback) => {
-  //         callback(null, './tmp'); // Use a temporary directory
-  //       },
-  //       filename: (req, file, callback) => {
-  //         const fileExtension = extname(file.originalname);
-  //         const fileName = sanitizeString(
-  //           basename(file.originalname, fileExtension),
-  //         );
-  //         callback(null, `${fileName}-${Date.now()}${fileExtension}`);
-  //       },
-  //     }),
-  //   }),
-  // )
-  // async uploadFile(@UploadedFile() file: Express.Multer.File) {
-  //   try {
-  //     // Read the file content
-  //     const fileContent = file.buffer;
-
-  //     // Determine the MIME type
-  //     const contentType = mime.getType(file.originalname) || 'application/octet-stream';
-
-  //     // Upload the file to S3
-  //     const result = await this..uploadFile(file.originalname, fileContent, contentType);
-
-  //     // Return the file details and URL
-  //     return {
-  //       filename: file.originalname,
-  //       uploaded: 1,
-  //       url: result.url,
-  //     };
-  //   } catch (error) {
-  //     console.error('Error uploading file:', error);
-  //     throw new Error('Failed to upload file');
-  //   }
-  // }
 
   @Post('upload')
   @UseInterceptors(FileInterceptor('upload', { storage }))
-  async uploadFile(@UploadedFile() file: Express.Multer.File) {
+  async uploadFile(
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<CkEditorResponse> {
     console.log(file);
     try {
       const result = await this.blogService.uploadFile(file);

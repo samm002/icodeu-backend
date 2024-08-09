@@ -1,23 +1,30 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString } from "class-validator"
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Matches,
+} from 'class-validator';
 
 export class CreateUserDto {
   @IsEmail()
   @IsNotEmpty()
   email: string;
-  
+
   @IsString()
   @IsNotEmpty()
   password: string;
 
   @IsString()
   @IsOptional()
-  name?: string
+  name?: string;
 
   @IsString()
   @IsOptional()
-  address?: string
+  address?: string;
 
   @IsString()
+  @Matches(/^\d+$/, { message: 'Phone number must be a number' })
   @IsOptional()
-  phoneNumber?: string
+  phoneNumber?: string;
 }

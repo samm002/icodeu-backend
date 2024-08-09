@@ -1,4 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 
-@Injectable()
-export class AdminService {}
+@Controller('dashboard')
+export class AdminService {
+  @Get()
+  getDashboard(): string {
+    return 'Admin Dashboard';
+  }
+}

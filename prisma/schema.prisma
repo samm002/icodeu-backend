@@ -13,22 +13,32 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum ProductType {
+  single
+  multi
+}
+
+enum ServiceType {
+  single
+  multi
+}
+
 model User {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            Int       @id @default(autoincrement())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
-  email     String @unique
-  password  String
+  email         String    @unique
+  password      String
 
-  name        String?
-  address     String?
-  phoneNumber String?
+  name          String?
+  address       String?
+  phoneNumber   String?
 
-  refreshToken String?
+  refreshToken  String?
 
-  roleId Int
-  role Role @relation(fields: [roleId], references: [id])
+  roleId        Int
+  role          Role      @relation(fields: [roleId], references: [id])
 
   blogs Blog[]
   
@@ -36,75 +46,84 @@ model User {
 }
 
 model Role {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
-  name String @unique
+  name        String    @unique
 
   users User[]
   
   @@map("roles")
 }
 
-model ProductPrices {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model PriceDetail {
+  id                Int       @id @default(autoincrement())
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 
-  name String 
-  description String?
-  price Float
-  discount Float?
-  features String[]
+  name              String 
+  description       String?
+  price             Float
+  discount          Float?
+  discountedPrice   Float?
+  features          String[]
 
-  productId Int
-  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId         Int?
+  product           Product?   @relation(fields: [productId], references: [id], onDelete: Cascade)
 
-  @@map("productPrices")
+  serviceId         Int?
+  service           Service?   @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  @@map("priceDetails")
 }
 
 model Product {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                Int       @id @default(autoincrement())
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 
-  type String
-  name String 
-  description String?
-  price Float
-  discount Float?
-  features String[]
+  type              ProductType
+  name              String
+  description       String?
+  price             Float?
+  discount          Float?
+  discountedPrice   Float?
+  features          String[]
 
-  productPrices ProductPrices[]
+  productPrices     PriceDetail[]
 
   @@map("products")
 }
 
 model Service {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                Int       @id @default(autoincrement())
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 
-  name String 
-  description String?
-  price Float
-  discount Float?
-  features String[]
+  type              ServiceType
+  name              String 
+  description       String?
+  price             Float?
+  discount          Float?
+  discountedPrice   Float?
+  features          String[]
+
+  servicePrices     PriceDetail[]
 
   @@map("services")
 }
 
 model Blog {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
-  title String 
-  content String
+  title       String 
+  content     String
 
-  author Int
-  user User @relation(fields: [author], references: [id], onDelete: Cascade)
+  author      Int
+  user        User      @relation(fields: [author], references: [id], onDelete: Cascade)
 
   @@map("blogs")
 }
