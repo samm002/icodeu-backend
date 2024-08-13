@@ -31,6 +31,10 @@ td img {
   max-width: 200px;
 }
 
+#addNewBlogBtn{
+  margin-top: 10rem;
+}
+
 a {
   text-decoration: none;
   color: blue;

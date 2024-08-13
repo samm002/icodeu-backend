@@ -3,6 +3,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Render,
   UseGuards,
 } from '@nestjs/common';
 
@@ -11,6 +12,7 @@ import { Roles } from '../common/decorators/get-role.decorator';
 import { ResponseStatus } from '../common/enums';
 import { JwtGuard, RolesGuard } from '../common/guards';
 import { ResponsePayload } from '../common/interfaces';
+import { Public } from 'src/common/decorators';
 
 @UseGuards(JwtGuard, RolesGuard)
 @Roles(['admin'])
@@ -18,12 +20,11 @@ import { ResponsePayload } from '../common/interfaces';
 export class AdminController {
   constructor(private adminService: AdminService) {}
 
+  @Public()
   @Get('dashboard')
-  async dashboard(): Promise<ResponsePayload<string>> {
-    return {
-      status: ResponseStatus.SUCCESS,
-      message: `Viewing admin dashboard`,
-      data: await this.adminService.getDashboard(), // mungkin nanti bakal jadi async
-    };
+  @Render('dashboard/index')
+  async dashboard()  {
+    const users = await this.adminService.getAllUsers()
+    return {users}
   }
 }
