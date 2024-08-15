@@ -10,5 +10,6 @@ import { CreateUserDto } from '../users/dto/create-user.dto';
   imports: [JwtModule.register({}), CreateUserDto],
   controllers: [AuthenticationController],
   providers: [AuthenticationService, JwtStrategy, RtStrategy],
+  exports: [AuthenticationService],
 })
 export class AuthenticationModule {}

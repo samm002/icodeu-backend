@@ -87,6 +87,18 @@ export class RolesService {
     return role;
   }
 
+  async getRoleId(roleName: string): Promise<number> {
+    const role = await this.prisma.role.findUnique({
+      where: {
+        name: roleName,
+      },
+    });
+
+    if (!role) throw new BadRequestException(`Role '${roleName}' not found`);
+
+    return role.id;
+  }
+
   async getRoleName(roleId: number): Promise<string> {
     const role = await this.prisma.role.findUnique({
       where: {
@@ -94,9 +106,7 @@ export class RolesService {
       },
     });
 
-    if (!role) {
-      throw new NotFoundException();
-    }
+    if (!role) throw new BadRequestException(`Role id '${roleId}' not found`);
 
     return role.name;
   }

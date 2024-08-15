@@ -128,5 +128,3 @@ model Blog {
 
   @@map("blogs")
 }
-
-
