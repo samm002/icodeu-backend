@@ -21,10 +21,42 @@ export class AdminController {
   constructor(private adminService: AdminService) {}
 
   @Public()
-  @Get('dashboard')
+  @Get('dashboards')
   @Render('dashboard/index')
-  async dashboard()  {
-    const users = await this.adminService.getAllUsers()
-    return {users}
+  async dashboard() {
+    const users = await this.adminService.getAllUsers();
+    return { users, title: 'Dashboard' };
+  }
+
+  @Public()
+  @Get('users')
+  @Render('dashboard/users/index')
+  async users() {
+    const users = await this.adminService.getAllUsers();
+    return { users, title: 'Users' };
+  }
+
+  @Public()
+  @Get('products')
+  @Render('dashboard/products/index')
+  async products() {
+    const users = await this.adminService.getAllUsers();
+    return { users, title: 'Products' };
+  }
+
+  @Public()
+  @Get('services')
+  @Render('dashboard/services/index')
+  async services() {
+    const users = await this.adminService.getAllUsers();
+    return { users, title: 'Services' };
+  }
+
+  @Public()
+  @Get('blogs')
+  @Render('dashboard/blogs/index')
+  async blogs() {
+    const users = await this.adminService.getAllUsers();
+    return { users, title: 'Blogs' };
   }
 }
