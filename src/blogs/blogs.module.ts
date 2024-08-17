@@ -10,5 +10,6 @@ import { BlogsService } from './blogs.service';
   ],
   controllers: [BlogsController],
   providers: [BlogsService],
+  exports: [BlogsService],
 })
 export class BlogsModule {}

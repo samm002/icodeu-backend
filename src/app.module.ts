@@ -22,10 +22,10 @@ import { UsersModule } from './users/users.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'public'),
-      // renderPath: 'public',  // Adjust the path to your public folder
-    }),
+    // ServeStaticModule.forRoot({
+    //   rootPath: join(__dirname, '..', 'public'),
+    //   // renderPath: 'public',  // Adjust the path to your public folder
+    // }),
     PrismaModule,
     S3Module,
     UsersModule,

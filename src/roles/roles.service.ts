@@ -14,7 +14,12 @@ export class RolesService {
   constructor(private prisma: PrismaService) {}
 
   async getAllRole(): Promise<Role[]> {
-    const roles = await this.prisma.role.findMany();
+    const roles = await this.prisma.role.findMany({
+      orderBy: {
+        id: 'asc',
+      },
+      include: { users: true },
+    });
 
     return roles;
   }
@@ -79,6 +84,9 @@ export class RolesService {
       where: {
         id: roleId,
       },
+      include: {
+        users: true,
+      },
     });
 
     if (!role)
@@ -87,6 +95,7 @@ export class RolesService {
     return role;
   }
 
+  // Role Helper Function (Used in Authentication and Admin Module)
   async getRoleId(roleName: string): Promise<number> {
     const role = await this.prisma.role.findUnique({
       where: {

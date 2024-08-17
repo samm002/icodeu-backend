@@ -22,7 +22,7 @@ export class AdminService {
   ) {}
 
   // Admin Authentication
-  async adminLogin(dto: AdminLoginDto) {
+  async login(dto: AdminLoginDto) {
     const adminRoleId = await this.roleService.getRoleId(Role.ADMIN);
     const user = await this.prisma.user.findUnique({
       where: {
@@ -59,14 +59,31 @@ export class AdminService {
     return tokens;
   }
 
+  async logout(userId: number): Promise<string> {
+    await this.prisma.user.updateMany({
+      where: {
+        id: userId,
+      },
+      data: {
+        refreshToken: null,
+      },
+    });
+
+    return 'Logged Out Success';
+  }
+
   // User Management
   async getAllUsers(): Promise<User[]> {
-    const users = await this.prisma.user.findMany();
+    const users = await this.prisma.user.findMany({
+      orderBy: {
+        id: 'asc',
+      },
+    });
 
     return users;
   }
 
-  async getUser(userId: number): Promise<User> {
+  async getUserById(userId: number): Promise<User> {
     const user = await this.prisma.user.findUnique({
       where: {
         id: userId,

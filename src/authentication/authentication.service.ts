@@ -82,15 +82,6 @@ export class AuthenticationService {
   }
 
   async logout(userId: number): Promise<string> {
-    const user = await this.prisma.user.findUnique({
-      where: {
-        id: userId,
-      },
-    });
-
-    if (!user.refreshToken)
-      throw new BadRequestException('Refresh token expired (exceeding 1 day)');
-
     await this.prisma.user.updateMany({
       where: {
         id: userId,
