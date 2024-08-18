@@ -10,6 +10,7 @@ import { PriceDetailsModule } from '../price-details/price-details.module';
 import { ProductsModule } from '../products/products.module';
 import { RolesModule } from '../roles/roles.module';
 import { ServicesModule } from '../services/services.module';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { ServicesModule } from '../services/services.module';
     ProductsModule,
     RolesModule,
     ServicesModule,
+    UsersModule,
   ],
   controllers: [AdminController],
   providers: [AdminService, RolesGuard],

@@ -14,7 +14,7 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { Role, User } from '@prisma/client';
+import { User } from '@prisma/client';
 
 import { AdminService } from './admin.service';
 import { AdminLoginDto } from './dto';
@@ -26,7 +26,6 @@ import { AuthenticationService } from '../authentication/authentication.service'
 import { BlogsService } from '../blogs/blogs.service';
 import { ProductsService } from '../products/products.service';
 import { PriceDetailsService } from '../price-details/price-details.service';
-import { RolesService } from '../roles/roles.service';
 import { ServicesService } from '../services/services.service';
 import { CreateUserDto, UpdateUserDto } from '../users/dto';
 import { UsersService } from 'src/users/users.service';
@@ -40,7 +39,6 @@ export class AdminController {
     private authenticationService: AuthenticationService,
     private blogService: BlogsService,
     private productService: ProductsService,
-    private priceDetailService: PriceDetailsService,
     private serviceService: ServicesService,
     private userService: UsersService,
   ) {}
@@ -50,7 +48,7 @@ export class AdminController {
   // User
   @Get('dashboards')
   @Render('dashboard/index')
-  async dashboard(@Request() req: any, @GetUser() user: User) {
+  async dashboard() {
     const users = await this.userService.getAllUser();
     return { users, title: 'Dashboard' };
   }
