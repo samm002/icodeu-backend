@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
-import { JwtPayload } from '../../common/interfaces';
+import { JwtPayload, SessionTokens } from '../../common/interfaces';
 import { PrismaService } from '../../prisma/prisma.service';
 import { Request as RequestType } from 'express';
 
@@ -23,13 +23,9 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     });
   }
 
-  private static extractJWT(req: RequestType): string | null {
-    if (
-      req.cookies &&
-      'accessToken' in req.cookies &&
-      req.cookies.accessToken.length > 0
-    ) {
-      return req.cookies.accessToken;
+  private static extractJWT(req: SessionTokens): string | null {
+    if (req.session && req.session.access_token) {
+      return req.session.access_token;
     }
     return null;
   }
