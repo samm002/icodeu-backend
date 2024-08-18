@@ -44,6 +44,41 @@ body {
   overflow-x: hidden;
 }
 
+/* button add, edit, delete */
+.btn {
+  border: none;
+  padding: 8px 16px;
+  text-align: center;
+  display: inline-block;
+  font-size: 16px;
+  outline: none;
+  border-radius: 8px;
+  transition: ease-in-out 0.3s;
+  cursor: pointer;
+}
+.btn.add {
+  color: var(--light);
+  background-color: var(--orange);
+}
+.btn.add:hover {
+  background-color: #cf5702;
+}
+.btn.edit {
+  color: var(--light);
+  background-color: var(--yellow);
+}
+.btn.edit:hover {
+  background-color: #d5a919;
+}
+.btn.delete {
+  color: var(--light);
+  background-color: var(--red);
+}
+.btn.delete:hover {
+  background-color: #bb3632;
+}
+/* button add, edit, delete */
+
 /* SIDEBAR */
 #sidebar {
   position: fixed;
@@ -383,6 +418,10 @@ body {
   color: var(--dark);
 }
 
+#example_wrapper {
+  width: 100% !important;
+  overflow-y: hidden !important;
+}
 #content main .table-data {
   display: flex;
   flex-wrap: wrap;

@@ -9,4 +9,20 @@
 <!-- My CSS -->
 <link rel="stylesheet" href="/styles/style.css" />
 
+<!-- datatables css setting -->
+<link
+  rel="stylesheet"
+  href="https://cdn.datatables.net/2.1.4/css/dataTables.dataTables.css"
+/>
+<!-- datatables javascript setting -->
+
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://cdn.datatables.net/2.1.4/js/dataTables.js"></script>
+
+<script>
+  $(document).ready(function () {
+    $('#example').DataTable();
+  });
+</script>
+
 <title><%= title %></title>

@@ -8,7 +8,9 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Redirect,
   Render,
+  Response,
   UseGuards,
 } from '@nestjs/common';
 
@@ -50,7 +52,7 @@ export class AdminController {
   }
 
   @Get('users')
-  // @Render('dashboard/users/index')
+  @Render('dashboard/users/index')
   async users() {
     const users = await this.adminService.getAllUsers();
     return { users, title: 'Users' };
@@ -78,9 +80,25 @@ export class AdminController {
   }
 
   // Admin Authentication
+  @Get('login')
+  @Render('authentication/login')
+  async getLogin() {
+    return { title: 'Login' };
+  }
+
   @HttpCode(HttpStatus.OK)
+  @Redirect('dashboards')
   @Post('login')
-  async login(@Body() dto: AdminLoginDto): Promise<ResponsePayload<Tokens>> {
+  async login(
+    @Body() dto: AdminLoginDto,
+    @Response() res,
+  ): Promise<ResponsePayload<Tokens>> {
+    const accessToken = (await this.adminService.login(dto)).access_token;
+    res.cookie('accessToken', accessToken, {
+      expires: new Date(new Date().getTime() + 30 * 1000),
+      sameSite: 'strict',
+      httpOnly: true,
+    });
     return {
       status: ResponseStatus.SUCCESS,
       message: 'Admin Logged In',

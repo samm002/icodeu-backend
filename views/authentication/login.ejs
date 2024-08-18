@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/styles/loginStyle.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+  </head>
+  <body>
+    <section class="container" id="container">
+      <div class="form-container register">
+        <form action="#">
+          <h1>Create Account</h1>
+          <span>Or use your email for registration</span>
+          <div class="input-wrapper">
+            <input type="text" id="name" placeholder=" " />
+            <label for="name">Name</label>
+            <i class="fa-solid fa-user"></i>
+          </div>
+          <div class="input-wrapper">
+            <input type="email" id="email" placeholder=" " />
+            <label for="email">Email</label>
+            <i class="fa-solid fa-envelope"></i>
+          </div>
+          <div class="input-wrapper">
+            <input type="Password" id="password" placeholder=" " />
+            <label for="password">Password</label>
+            <i class="fa-solid fa-key"></i>
+          </div>
+          <button>Register</button>
+        </form>
+      </div>
+
+      <div class="form-container login">
+        <form action="/admin/login" method="POST">
+          <h1>Sign in</h1>
+          <span>Or use your email account</span>
+          <div class="input-wrapper">
+            <input type="email" id="email" name="email" placeholder=" " />
+            <label for="email">Email</label>
+            <i class="fa-solid fa-envelope"></i>
+          </div>
+          <div class="input-wrapper">
+            <input
+              type="Password"
+              id="password"
+              name="password"
+              placeholder=" "
+            />
+            <label for="password">Password</label>
+            <i class="fa-solid fa-key"></i>
+          </div>
+          <button>Login</button>
+        </form>
+      </div>
+
+      <div class="overlay-container">
+        <div class="overlay">
+          <div class="overlay-panel overlay-left">
+            <div class="panel-container">
+              <h1 class="title">Hello friends</h1>
+              <p>To keep connected with us please login here and have fun.</p>
+              <button class="ghost" id="login">Login</button>
+            </div>
+          </div>
+          <div class="overlay-panel overlay-right">
+            <div class="panel-container">
+              <h1 class="title">Welcome Back!</h1>
+              <p>
+                If you don't have an account yet, join us and start your
+                journey.
+              </p>
+              <button class="ghost" id="register">Register</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <script src="/scripts/loginScript.js"></script>
+  </body>
+</html>
