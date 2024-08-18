@@ -5,6 +5,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 
 import { JwtPayload } from '../../common/interfaces';
 import { PrismaService } from '../../prisma/prisma.service';
+import { Request as RequestType } from 'express';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -13,10 +14,24 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     private prisma: PrismaService,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        JwtStrategy.extractJWT,
+        ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ]),
       ignoreExpiration: false,
       secretOrKey: config.get('JWT_AT_SECRET'),
     });
+  }
+
+  private static extractJWT(req: RequestType): string | null {
+    if (
+      req.cookies &&
+      'accessToken' in req.cookies &&
+      req.cookies.accessToken.length > 0
+    ) {
+      return req.cookies.accessToken;
+    }
+    return null;
   }
 
   async validate(payload: JwtPayload) {

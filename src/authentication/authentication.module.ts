@@ -6,7 +6,14 @@ import { AuthenticationController } from './authentication.controller';
 import { JwtStrategy, RtStrategy } from './strategies';
 
 @Module({
-  imports: [JwtModule.register({})],
+  imports: [
+    JwtModule.register({
+      secret: process.env.JWT_AT_SECRET,
+      signOptions: {
+        expiresIn: process.env.JWT_AT_EXPIRE,
+      },
+    }),
+  ],
   controllers: [AuthenticationController],
   providers: [AuthenticationService, JwtStrategy, RtStrategy],
   exports: [AuthenticationService],

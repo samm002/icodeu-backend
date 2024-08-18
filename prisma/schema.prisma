@@ -25,21 +25,23 @@ enum ServiceType {
 }
 
 model User {
-  id            Int       @id @default(autoincrement())
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id              Int       @id @default(autoincrement())
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 
-  email         String    @unique
-  password      String
+  email           String    @unique
+  password        String
+  // username        String    @unique
 
-  name          String?
-  address       String?
-  phoneNumber   String?
+  name            String?
+  address         String?
+  phoneNumber     String?
+  // profilePicture  String?
 
-  refreshToken  String?
+  refreshToken    String?
 
-  roleId        Int
-  role          Role      @relation(fields: [roleId], references: [id])
+  roleId          Int
+  role            Role      @relation(fields: [roleId], references: [id])
 
   blogs Blog[]
   

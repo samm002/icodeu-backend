@@ -10,6 +10,8 @@ import {
   Post,
   Redirect,
   Render,
+  Req,
+  Request,
   Response,
   UseGuards,
 } from '@nestjs/common';
@@ -29,9 +31,8 @@ import { CreateUserDto, UpdateUserDto } from 'src/users/dto';
 import { Role, User } from '@prisma/client';
 import { RolesService } from 'src/roles/roles.service';
 
-// @UseGuards(JwtGuard, RolesGuard)
-// @Roles(['admin'])
-@Public()
+@UseGuards(JwtGuard, RolesGuard)
+@Roles(['admin'])
 @Controller('admin')
 export class AdminController {
   constructor(
@@ -44,9 +45,10 @@ export class AdminController {
   ) {}
 
   // View Handling route
+  @UseGuards(JwtGuard)
   @Get('dashboards')
   @Render('dashboard/index')
-  async dashboard() {
+  async dashboard(@Request() req) {
     const users = await this.adminService.getAllUsers();
     return { users, title: 'Dashboard' };
   }
@@ -79,6 +81,7 @@ export class AdminController {
     return { blogs, title: 'Blogs' };
   }
 
+  @Public()
   // Admin Authentication
   @Get('login')
   @Render('authentication/login')
@@ -86,28 +89,20 @@ export class AdminController {
     return { title: 'Login' };
   }
 
+  @Public()
   @HttpCode(HttpStatus.OK)
   @Redirect('dashboards')
   @Post('login')
-  async login(
-    @Body() dto: AdminLoginDto,
-    @Response() res,
-  ): Promise<ResponsePayload<Tokens>> {
+  async login(@Body() dto: AdminLoginDto, @Response() res) {
     const accessToken = (await this.adminService.login(dto)).access_token;
     res.cookie('accessToken', accessToken, {
       expires: new Date(new Date().getTime() + 30 * 1000),
-      sameSite: 'strict',
+      sameSite: 'lax',
       httpOnly: true,
     });
-    return {
-      status: ResponseStatus.SUCCESS,
-      message: 'Admin Logged In',
-      data: await this.adminService.login(dto),
-    };
   }
 
   @HttpCode(HttpStatus.OK)
-  @UseGuards(JwtGuard)
   @Post('logout')
   async logout(
     @GetUser('id') userId: number,
