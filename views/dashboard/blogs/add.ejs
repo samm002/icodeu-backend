@@ -26,7 +26,7 @@
                     <label for="title">Title</label>
                     <input
                       id="title"
-                      title="title"
+                      name="title"
                       type="text"
                       class="form-control"
                       required
@@ -39,7 +39,6 @@
                       rows="3"
                       name="content"
                       id="editor"
-                      required
                     ></textarea>
                   </div>
                 </div>
@@ -58,7 +57,7 @@
       </div>
       <%- include('../../layouts/footer.ejs') %>
     </div>
-
+    
     <%- include('../../layouts/ckeditor.ejs') %>
   </body>
 </html>

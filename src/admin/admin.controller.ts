@@ -56,9 +56,9 @@ export class AdminController {
   // view rendernya tolong diatur ulang aja
   @Get('users')
   @Render('dashboard/users/index')
-  async getUAllser() {
+  async getAllUsers(@GetUser("name") name: string) {
     const users = await this.userService.getAllUser();
-    return { users, title: 'Users' };
+    return { users, title: 'Users', name };
   }
 
   @Get('users/create')
