@@ -1,0 +1,64 @@
+<html lang="en">
+  <head>
+    <%- include('../../layouts/head.ejs') %>
+  </head>
+  <body>
+    <div id="home">
+      <%- include('../../layouts/navbar.ejs') %>
+      <div class="container tm-mt-big tm-mb-big">
+        <div class="row">
+          <div class="col-xl-9 col-lg-10 col-md-12 col-sm-12 mx-auto">
+            <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
+              <div class="row">
+                <div class="col-12">
+                  <h2 class="tm-block-title d-inline-block">Add Blog</h2>
+                </div>
+              </div>
+
+              <form
+                action="/api/v1/blogs"
+                method="post"
+                class="row"
+                enctype="multipart/form-data"
+              >
+                <div class="col-12">
+                  <div class="form-group mb-3">
+                    <label for="title">Title</label>
+                    <input
+                      id="title"
+                      title="title"
+                      type="text"
+                      class="form-control"
+                      required
+                    />
+                  </div>
+                  <div class="form-group mb-3">
+                    <label for="editor">Content</label>
+                    <textarea
+                      class="form-control"
+                      rows="3"
+                      name="content"
+                      id="editor"
+                      required
+                    ></textarea>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <button
+                    type="submit"
+                    class="btn btn-primary btn-block text-uppercase"
+                  >
+                    Add Blog Now
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <%- include('../../layouts/footer.ejs') %>
+    </div>
+
+    <%- include('../../layouts/ckeditor.ejs') %>
+  </body>
+</html>

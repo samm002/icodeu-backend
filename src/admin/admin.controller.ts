@@ -61,21 +61,21 @@ export class AdminController {
     return { users, title: 'Users' };
   }
 
+  @Get('users/create')
+  @Render('dashboard/users/add')
+  async createUserView() {
+    return { title: 'Create User' };
+  }
+
   @Get('users/:id')
-  @Render('dashboard/users/index')
+  @Render('dashboard/users/show')
   async getUserById(@Param('id', ParseIntPipe) userId: number) {
     const user = await this.userService.getUserById(userId);
     return { user, title: `User ${userId}` };
   }
 
-  @Get('users/create')
-  @Render('dashboard/users/index')
-  async createUserView() {
-    return { title: 'Create User' };
-  }
-
   @Get('users/:id/update')
-  @Render('dashboard/users/index')
+  @Render('dashboard/users/edit')
   async updateUserView(@Param('id', ParseIntPipe) userId: number) {
     const user = await this.userService.getUserById(userId);
     return { user, title: `Update User ${userId}` };
@@ -89,21 +89,21 @@ export class AdminController {
     return { products, title: 'Products' };
   }
 
+  @Get('products/create')
+  @Render('dashboard/products/add')
+  async createProductView() {
+    return { title: 'Create Product' };
+  }
+
   @Get('products/:id')
-  @Render('dashboard/products/index')
+  @Render('dashboard/products/show')
   async getProductById(@Param('id', ParseIntPipe) productId: number) {
     const product = await this.productService.getProductById(productId);
     return { product, title: `Product ${productId}` };
   }
 
-  @Get('products/create')
-  @Render('dashboard/products/index')
-  async createProductView() {
-    return { title: 'Create Product' };
-  }
-
   @Get('products/:id/update')
-  @Render('dashboard/products/index')
+  @Render('dashboard/products/edit')
   async updateProductView(@Param('id', ParseIntPipe) productId: number) {
     const product = await this.productService.getProductById(productId);
     return { product, title: `Update Product ${productId}` };
@@ -117,26 +117,26 @@ export class AdminController {
     return { services, title: 'Services' };
   }
 
-  @Get('services/:id')
-  @Render('dashboard/services/index')
-  async getServiceById(@Param('id', ParseIntPipe) serviceId: number) {
-    const service = await this.serviceService.getServiceById(serviceId);
-    return { service, title: `Service ${serviceId}` };
-  }
-
   @Get('services/create')
   @Render('dashboard/services/index')
   async createServiceView() {
     return { title: 'Create Service' };
   }
 
+  @Get('services/:id')
+  @Render('dashboard/services/show')
+  async getServiceById(@Param('id', ParseIntPipe) serviceId: number) {
+    const service = await this.serviceService.getServiceById(serviceId);
+    return { service, title: `Service ${serviceId}` };
+  }
+
   @Get('services/:id/update')
-  @Render('dashboard/services/index')
+  @Render('dashboard/services/edit')
   async updateServiceView(@Param('id', ParseIntPipe) serviceId: number) {
     const service = await this.serviceService.getServiceById(serviceId);
     return { service, title: `Update Service ${serviceId}` };
   }
-  
+
   // Blog
   @Get('blogs')
   @Render('dashboard/blogs/index')
@@ -145,22 +145,22 @@ export class AdminController {
     return { blogs, title: 'Blogs' };
   }
 
+  @Get('blogs/create')
+  @Render('dashboard/blogs/add')
+  async createBlogView() {
+    return { title: 'Create Blog' };
+  }
+
   @Get('blogs/:id')
-  @Render('dashboard/blogs/index')
+  @Render('dashboard/blogs/show')
   async getBlogById(@Param('id', ParseIntPipe) blogId: number) {
     const blog = await this.blogService.getBlogById(blogId);
     return { blog, title: `Blog ${blogId}` };
   }
 
-  @Get('blogs/create')
-  @Render('dashboard/blogs/index')
-  async createblogView() {
-    return { title: 'Create Blog' };
-  }
-
   @Get('blogs/:id/update')
-  @Render('dashboard/blogs/index')
-  async updateblogView(@Param('id', ParseIntPipe) blogId: number) {
+  @Render('dashboard/blogs/edit')
+  async updateBlogView(@Param('id', ParseIntPipe) blogId: number) {
     const blog = await this.blogService.getBlogById(blogId);
     return { blog, title: `Update bBog ${blogId}` };
   }
@@ -213,6 +213,7 @@ export class AdminController {
 
   @HttpCode(HttpStatus.OK)
   @Post('logout')
+  @Redirect('login')
   async logout(
     @GetUser('id') userId: number,
   ): Promise<ResponsePayload<string>> {

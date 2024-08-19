@@ -1,0 +1,54 @@
+<script>
+  class MyCustomUploadAdapter {
+    constructor(loader) {
+      this.loader = loader;
+    }
+
+    upload() {
+      return this.loader.file.then(
+        (file) =>
+          new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', 'upload', true);
+            xhr.responseType = 'json';
+
+            xhr.onload = () => {
+              if (xhr.status >= 200 && xhr.status < 300) {
+                resolve({
+                  default: xhr.response.url,
+                });
+              } else {
+                reject(xhr.response);
+              }
+            };
+
+            xhr.onerror = () => {
+              reject(xhr.response);
+            };
+
+            const formData = new FormData();
+            formData.append('upload', file);
+
+            xhr.send(formData);
+          }),
+      );
+    }
+
+    abort() {
+      // Implement abort functionality if necessary
+    }
+  }
+  ClassicEditor.create(document.querySelector('#editor'), {
+    ckfinder: {
+      uploadUrl: 'upload',
+    },
+  })
+    .then((editor) => {
+      editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+        return new MyCustomUploadAdapter(loader);
+      };
+    })
+    .catch((error) => {
+      console.error('CKEditor error:', error);
+    });
+</script>

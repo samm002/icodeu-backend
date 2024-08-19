@@ -10,19 +10,21 @@
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <td>Tiger Nixon</td>
-      <td>System Architect</td>
-      <td>Edinburgh</td>
-      <td>61</td>
-      <td>2011-04-25</td>
-      <td>
-        <a href="/admin/users/edit">
-          <button class="btn edit">Edit</button>
-        </a>
-        <button class="btn delete">Delete</button>
-      </td>
-    </tr>
+    <% users.map((item) => { %>
+      <tr>
+        <td><%= item.name %></td>
+        <td><%= item.email %></td>
+        <td><%= item.phoneNumber %></td>
+        <td><%= item.address %></td>
+        <td><%= item.roleId %></td>
+        <td style="white-space: nowrap;">
+          <a href="/admin/users/edit">
+            <button class="btn edit">Edit</button>
+          </a>
+          <button class="btn delete">Delete</button>
+        </td>
+      </tr>
+    <% }); %>
   </tbody>
   <tfoot>
     <tr>

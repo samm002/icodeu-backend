@@ -1,143 +1,66 @@
-<!doctype html>
 <html lang="en">
   <head>
     <%- include('../../layouts/head.ejs') %>
   </head>
   <body>
-    <!-- SIDEBAR-->
-    <%- include('../../layouts/sidebar.ejs') %>
-    <!-- SIDEBAR -->
-
-    <!-- CONTENT -->
-    <section id="content">
-      <!-- NAVBAR -->
+    <div id="home">
       <%- include('../../layouts/navbar.ejs') %>
-      <!-- NAVBAR -->
-
-      <!-- MAIN -->
-      <main>
-        <!-- HEAD CONTENT -->
-        <%- include('../../layouts/head-content.ejs') %>
-        <!-- HEAD CONTENT -->
-
-        <ul class="box-info">
-          <li>
-            <i class="bx bxs-calendar-check"></i>
-            <span class="text">
-              <h3>1020</h3>
-              <p>New Order</p>
-            </span>
-          </li>
-          <li>
-            <i class="bx bxs-group"></i>
-            <span class="text">
-              <h3>2834</h3>
-              <p>Visitors</p>
-            </span>
-          </li>
-          <li>
-            <i class="bx bxs-dollar-circle"></i>
-            <span class="text">
-              <h3>$2543</h3>
-              <p>Total Sales</p>
-            </span>
-          </li>
-        </ul>
-
-        <div class="table-data">
-          <div class="order">
-            <div class="head">
-              <h3>Recent Orders</h3>
-              <i class="bx bx-search"></i>
-              <i class="bx bx-filter"></i>
-            </div>
-            <table>
+      <div class="container mt-5">
+        <h1 class="title-top text-uppercase">Product Section</h1>
+        <div class="tm-bg-primary-dark tm-block tm-block-products">
+          <div class="tm-product-table-container">
+            <table class="table table-hover tm-table-small tm-product-table">
               <thead>
                 <tr>
-                  <th>User</th>
-                  <th>Date Order</th>
-                  <th>Status</th>
+                  <th scope="col">Title</th>
+                  <th scope="col">&nbsp;</th>
+                  <th scope="col">&nbsp;</th>
+                  <th scope="col">&nbsp;</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>
-                    <img src="/images/people.png" />
-                    <p>John Doe</p>
-                  </td>
-                  <td>01-10-2021</td>
-                  <td><span class="status completed">Completed</span></td>
-                </tr>
-                <tr>
-                  <td>
-                    <img src="/images/people.png" />
-                    <p>John Doe</p>
-                  </td>
-                  <td>01-10-2021</td>
-                  <td><span class="status pending">Pending</span></td>
-                </tr>
-                <tr>
-                  <td>
-                    <img src="/images/people.png" />
-                    <p>John Doe</p>
-                  </td>
-                  <td>01-10-2021</td>
-                  <td><span class="status process">Process</span></td>
-                </tr>
-                <tr>
-                  <td>
-                    <img src="/images/people.png" />
-                    <p>John Doe</p>
-                  </td>
-                  <td>01-10-2021</td>
-                  <td><span class="status pending">Pending</span></td>
-                </tr>
-                <tr>
-                  <td>
-                    <img src="/images/people.png" />
-                    <p>John Doe</p>
-                  </td>
-                  <td>01-10-2021</td>
-                  <td><span class="status completed">Completed</span></td>
-                </tr>
+                <% blogs.map((item)=>{ %>
+                  <tr>
+                    <td class="tm-product-name text-nowrap w-100"><%= item.title %></td>
+                    <td>
+                      <a
+                        href="/admin/blogs/<%= item.id %>/update"
+                        class="tm-product-link"
+                      >
+                        <i class="fas fa-pencil-alt" style="color: cadetblue"></i>
+                      </a>
+                    </td>
+                    <td>
+                      <a
+                        href="/admin/blogs/<%= item.id %>"
+                        class="tm-product-link"
+                      >
+                        <i class="fas fa-eye" style="color: bisque"></i>
+                      </a>
+                    </td>
+                    <td>
+                      <button class="tm-product-link btn">
+                        <i class="fas fa-trash-alt" style="color: red"></i>
+                      </button>
+                    </td>
+                  </tr>
+                <% }) %>
               </tbody>
             </table>
           </div>
-          <div class="todo">
-            <div class="head">
-              <h3>Todos</h3>
-              <i class="bx bx-plus"></i>
-              <i class="bx bx-filter"></i>
-            </div>
-            <ul class="todo-list">
-              <li class="completed">
-                <p>Todo List</p>
-                <i class="bx bx-dots-vertical-rounded"></i>
-              </li>
-              <li class="completed">
-                <p>Todo List</p>
-                <i class="bx bx-dots-vertical-rounded"></i>
-              </li>
-              <li class="not-completed">
-                <p>Todo List</p>
-                <i class="bx bx-dots-vertical-rounded"></i>
-              </li>
-              <li class="completed">
-                <p>Todo List</p>
-                <i class="bx bx-dots-vertical-rounded"></i>
-              </li>
-              <li class="not-completed">
-                <p>Todo List</p>
-                <i class="bx bx-dots-vertical-rounded"></i>
-              </li>
-            </ul>
-          </div>
+          <!-- table container -->
+          <a
+            href="/admin/blogs/create"
+            class="btn btn-primary btn-block text-uppercase mb-3"
+            >Add new blog</a
+          >
+          <button class="btn btn-primary btn-block text-uppercase">
+            Delete selected blogs
+          </button>
         </div>
-      </main>
-      <!-- MAIN -->
-    </section>
-    <!-- CONTENT -->
-
-    <script src="/scripts/script.js"></script>
+      </div>
+      <%- include('../../layouts/footer.ejs') %>
+    </div>
+    <%- include('../../layouts/script.ejs') %>
   </body>
 </html>
