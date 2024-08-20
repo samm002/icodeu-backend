@@ -59,7 +59,7 @@
         <li class="nav-item">
           <form action="/admin/logout" method="post">
             <button type="submit" class="btn-logout d-block">
-              <%= name %>, <b>Logout</b>
+              <%= typeof name !== 'undefined' ? name : 'Guest' %>, <b>Logout</b>
             </button>
           </form>
         </li>

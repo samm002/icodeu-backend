@@ -32,19 +32,27 @@ export class ProductsService {
   }
 
   async createProduct(dto: CreateProductDto): Promise<Product> {
+    let price: number;
+    let discount: number;
+
+    if (dto.price || dto.discount) {
+      price = Number(dto.price)
+      discount = Number(dto.discount)
+    }
     if (dto.type !== 'multi' && !dto.price) {
       throw new BadRequestException('Please input price');
     }
 
     const discountedPrice =
-      dto.price && dto.discount
-        ? this.common.countDiscount(dto.price, dto.discount)
-        : dto.price || dto.discount;
+      price && discount
+        ? this.common.countDiscount(price, discount)
+        : null;
 
     const product = await this.prisma.product.create({
       data: {
         type: dto.type,
         name: dto.name,
+        price: price,
         discountedPrice: discountedPrice,
       },
     });

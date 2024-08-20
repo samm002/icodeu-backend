@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { Product } from '@prisma/client';
 
@@ -17,6 +18,8 @@ import { Public, Roles } from '../common/decorators';
 import { ResponseStatus, Role } from '../common/enums';
 import { JwtGuard, RolesGuard } from '../common/guards';
 import { ResponsePayload } from '../common/interfaces';
+import { FormDataRequest, MemoryStoredFile } from 'nestjs-form-data';
+import { AnyFilesInterceptor, NoFilesInterceptor } from '@nestjs/platform-express';
 
 @UseGuards(JwtGuard, RolesGuard)
 @Roles([Role.ADMIN, Role.PRODUCT_MANAGER])
@@ -50,6 +53,7 @@ export class ProductsController {
     };
   }
 
+  @FormDataRequest()
   @Post()
   async createProduct(
     @Body() dto: CreateProductDto,
@@ -84,7 +88,7 @@ export class ProductsController {
         data: await this.productService.deleteProductById(productId),
       };
     } catch (error) {
-      throw error
+      throw error;
     }
   }
 }
