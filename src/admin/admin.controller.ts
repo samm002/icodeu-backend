@@ -12,6 +12,7 @@ import {
   Redirect,
   Render,
   Request,
+  Response,
   UseGuards,
 } from '@nestjs/common';
 import { User } from '@prisma/client';
@@ -59,7 +60,7 @@ export class AdminController {
   // View Handling route
   @Get('dashboards')
   @Render('dashboard/index')
-  async dashboard(@GetUser("name") name: string) {
+  async dashboard(@GetUser('name') name: string) {
     const users = await this.userService.getAllUser();
     return { users, title: 'Dashboard' };
   }
@@ -67,7 +68,7 @@ export class AdminController {
   // User
   @Get('users')
   @Render('dashboard/users/index')
-  async getAllUsers(@GetUser("name") name: string) {
+  async getAllUsers(@GetUser('name') name: string) {
     const users = await this.userService.getAllUser();
     return { users, title: 'Users' };
   }
@@ -95,17 +96,17 @@ export class AdminController {
   // Product
   @Get('products')
   @Render('dashboard/products/index')
-  async getAllProduct(@GetUser("name") name: string) {
+  async getAllProduct(@GetUser('name') name: string) {
     const products = await this.productService.getAllProduct();
     return { products, title: 'Products' };
   }
 
   @Get('products/create')
-  @Render('dashboard/products/add') 
-  async createProductView(@GetUser("name") name: string) {
+  @Render('dashboard/products/add')
+  async createProductView(@GetUser('name') name: string) {
     return { title: 'Create Product' };
   }
-  
+
   @Get('products/:id')
   @Render('dashboard/products/show')
   async getProductById(@Param('id', ParseIntPipe) productId: number) {
@@ -123,14 +124,14 @@ export class AdminController {
   // Service
   @Get('services')
   @Render('dashboard/services/index')
-  async services(@GetUser("name") name: string) {
+  async services(@GetUser('name') name: string) {
     const services = await this.serviceService.getAllService();
     return { services, title: 'Services' };
   }
 
   @Get('services/create')
   @Render('dashboard/services/index')
-  async createServiceView(@GetUser("name") name: string) {
+  async createServiceView(@GetUser('name') name: string) {
     return { title: 'Create Service' };
   }
 
@@ -151,14 +152,14 @@ export class AdminController {
   // Blog
   @Get('blogs')
   @Render('dashboard/blogs/index')
-  async blogs(@GetUser("name") name: string) {
+  async blogs(@GetUser('name') name: string) {
     const blogs = await this.blogService.getAllBlog();
     return { blogs, title: 'Blogs' };
   }
 
   @Get('blogs/create')
   @Render('dashboard/blogs/add')
-  async createBlogView(@GetUser("name") name: string) {
+  async createBlogView(@GetUser('name') name: string) {
     return { title: 'Create Blog' };
   }
 
@@ -168,7 +169,7 @@ export class AdminController {
     const blog = await this.blogService.getBlogById(blogId);
     return { blog, title: `Blog ${blogId}` };
   }
-  
+
   @Get('blogs/:id/update')
   @Render('dashboard/blogs/edit')
   async updateBlogView(@Param('id', ParseIntPipe) blogId: number) {
@@ -227,7 +228,16 @@ export class AdminController {
   @Redirect('login')
   async logout(
     @GetUser('id') userId: number,
+    @Request() req: any,
+    @Response() res: any,
   ): Promise<ResponsePayload<string>> {
+    req.session.destroy((err: any) => {
+      if (err) {
+        console.error('Error destroying session:', err);
+      }
+      res.clearCookie('connect.sid');
+    });
+
     return {
       status: ResponseStatus.SUCCESS,
       message: 'Admin Logged Out',
