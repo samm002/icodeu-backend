@@ -7,6 +7,7 @@ import { join } from 'path';
 import * as passport from 'passport';
 
 import { AppModule } from './app.module';
+import { closeRedisClient, redisStore } from './common/utils';
 
 const port = process.env.PORT || 3000;
 
@@ -23,6 +24,7 @@ async function bootstrap() {
 
   app.use(
     session({
+      store: redisStore,
       secret: process.env.SESSION_SECRET,
       resave: false,
       saveUninitialized: false,
@@ -49,6 +51,21 @@ async function bootstrap() {
   await app.listen(port);
 
   console.log(`API is running on: ${await app.getUrl()}`);
+
+  // Handle graceful shutdown
+  process.on('SIGTERM', async () => {
+    console.log('SIGTERM signal received.');
+    await closeRedisClient();
+    await app.close();
+    process.exit(0);
+  });
+
+  process.on('SIGINT', async () => {
+    console.log('SIGINT signal received.');
+    await closeRedisClient();
+    await app.close();
+    process.exit(0);
+  });
 }
 
 bootstrap();
