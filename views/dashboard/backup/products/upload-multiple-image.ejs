@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <%- include('../../layouts/head.ejs') %>
+</head>
+<body id="reportsPage">
+  <div id="home">
+    <%- include('../../layouts/navbar.ejs') %>
+    <div class="container tm-mt-big tm-mb-big">
+      <div class="row">
+        <div class="col-xl-9 col-lg-10 col-md-12 col-sm-12 mx-auto">
+          <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
+            <div class="row">
+              <div class="col-12">
+                <h2 class="tm-block-title d-inline-block">Add Product</h2>
+              </div>
+            </div>
+            <div class="row">
+              <form id="uploadForm" action="/api/v1/products" method="post" enctype="multipart/form-data">
+                <!-- Other form fields -->
+                  <div class="tm-product-img-dummy mx-auto">
+                    <i class="fas fa-cloud-upload-alt tm-upload-icon" onclick="document.getElementById('fileInput').click();"></i>
+                  </div>
+                  <div class="custom-file mt-3 mb-3">
+                    <input id="fileInput" type="file" name="uploads[]" multiple style="display: none" onchange="uploadImages(event)" />
+                    <input type="button" class="btn btn-primary btn-block mx-auto" value="UPLOAD PRODUCT IMAGES" onclick="document.getElementById('fileInput').click();" />
+                  </div>
+                  <div id="image-preview" style="margin-top: 10px;"></div>
+                </div>
+                <input type="hidden" id="imageUrls" name="imageUrls">
+                <button type="submit" class="btn btn-primary btn-block text-uppercase">Add Product Now</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%- include('../../layouts/footer.ejs') %>
+  </div>
+
+  <%- include('../../layouts/script.ejs') %>
+  <script>
+    function uploadImages(event) {
+      const files = event.target.files;
+      const formData = new FormData();
+      
+      // Append each file to FormData
+      Array.from(files).forEach(file => {
+        formData.append('uploads[]', file);
+      });
+
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', '/api/v1/upload-multiple', true);
+      xhr.responseType = 'json';
+
+      xhr.onload = function() {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          // Get the URLs from the response
+          const imageUrls = xhr.response.urls;
+
+          // Log the image URLs to the console
+          console.log('Uploaded Image URLs:', imageUrls);
+
+          // Update the image preview
+          const imagePreview = document.getElementById('image-preview');
+          imagePreview.innerHTML = '';
+          imageUrls.forEach(url => {
+            const img = document.createElement('img');
+            img.src = url;
+            img.style.maxWidth = '100%';
+            img.style.maxHeight = '300px';
+            imagePreview.appendChild(img);
+          });
+
+          // Update the hidden input with the image URLs
+          document.getElementById('imageUrls').value = JSON.stringify(imageUrls);
+        } else {
+          console.error('Failed to upload images:', xhr.response);
+          alert('Failed to upload images. Please try again.');
+        }
+      };
+
+      xhr.onerror = function(e) {
+        console.error('Error uploading images', e);
+        alert('Error uploading images. Please try again.');
+      };
+
+      xhr.send(formData);
+    }
+  </script>
+</body>
+</html>

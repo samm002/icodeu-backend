@@ -6,15 +6,16 @@ import {
 import { Product } from '@prisma/client';
 
 import { CreateProductDto, UpdateProductDto } from './dto';
-import { CommonService } from '../common/common.service';
 import { PrismaService } from '../prisma/prisma.service';
+import {
+  countDiscount,
+  parseStringJSONToArray,
+  transformToNumber,
+} from '../common/utils';
 
 @Injectable()
 export class ProductsService {
-  constructor(
-    private prisma: PrismaService,
-    private common: CommonService,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   async getAllProduct(): Promise<Product[]> {
     const products = await this.prisma.product.findMany({
@@ -26,34 +27,35 @@ export class ProductsService {
   }
 
   async getProductById(productId: number): Promise<Product> {
-    const product = this.findProductById(productId);
+    const product = await this.findProductById(productId);
 
     return product;
   }
 
   async createProduct(dto: CreateProductDto): Promise<Product> {
-    let price: number;
-    let discount: number;
-
-    if (dto.price || dto.discount) {
-      price = Number(dto.price)
-      discount = Number(dto.discount)
-    }
     if (dto.type !== 'multi' && !dto.price) {
-      throw new BadRequestException('Please input price');
+      throw new BadRequestException(
+        "Please input price for product type 'multi'",
+      );
     }
+
+    const [price, discount] = transformToNumber(dto.price, dto.discount);
+    const features = typeof dto.features === 'string' ? [] : dto.features;
+    const images = parseStringJSONToArray(String(dto.images));
 
     const discountedPrice =
-      price && discount
-        ? this.common.countDiscount(price, discount)
-        : null;
+      dto.price && dto.discount ? countDiscount(price, discount) : null;
 
     const product = await this.prisma.product.create({
       data: {
         type: dto.type,
         name: dto.name,
-        price: price,
-        discountedPrice: discountedPrice,
+        description: dto.description,
+        price,
+        discount,
+        discountedPrice,
+        features,
+        images,
       },
     });
 
@@ -64,6 +66,7 @@ export class ProductsService {
     productId: number,
     dto: UpdateProductDto,
   ): Promise<Product> {
+    console.log({ dto });
     const product = await this.findProductById(productId);
 
     if (
@@ -75,20 +78,25 @@ export class ProductsService {
       throw new BadRequestException('Please input price');
     }
 
-    const price = dto.price ?? product.price;
-    const discount = dto.discount ?? product.discount;
+    const [updatedPrice, updatedDiscount] = transformToNumber(
+      dto.price,
+      dto.discount,
+    );
+
+    const price = updatedPrice ?? product.price;
+    const discount = updatedDiscount ?? product.discount;
 
     const discountedPrice =
       price && discount
-        ? this.common.countDiscount(price, discount)
-        : price || discount;
+        ? countDiscount(price, discount)
+        : (product.discountedPrice ?? null);
 
     return await this.prisma.product.update({
       where: {
         id: productId,
       },
       data: {
-        discountedPrice: discountedPrice,
+        discountedPrice,
         ...dto,
       },
       include: {
@@ -111,6 +119,9 @@ export class ProductsService {
     const product = await this.prisma.product.findUnique({
       where: {
         id: productId,
+      },
+      include: {
+        productPrices: true,
       },
     });
 

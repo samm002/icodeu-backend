@@ -8,14 +8,15 @@ import { PriceDetail, Product, Service } from '@prisma/client';
 import { CreatePriceDetailDto, UpdatePriceDetailDto } from './dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { ProductType, ServiceType } from '../common/enums';
-import { CommonService } from '../common/common.service';
+import {
+  countDiscount,
+  parseStringJSONToArray,
+  transformToNumber,
+} from '../common/utils';
 
 @Injectable()
 export class PriceDetailsService {
-  constructor(
-    private prisma: PrismaService,
-    private common: CommonService,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   // Product Price Detail
   async getAllProductPriceDetail(productId: number): Promise<PriceDetail[]> {
@@ -36,7 +37,7 @@ export class PriceDetailsService {
   ): Promise<PriceDetail> {
     await this.findProductById(productId);
 
-    const productPrice = this.findPriceDetailById(productPriceDetailId);
+    const productPrice = await this.findPriceDetailById(productPriceDetailId);
 
     return productPrice;
   }
@@ -47,19 +48,24 @@ export class PriceDetailsService {
   ): Promise<PriceDetail> {
     await this.findProductById(productId);
 
+    const [price, discount] = transformToNumber(dto.price, dto.discount);
+    const features = typeof dto.features === 'string' ? [] : dto.features;
+    const images = parseStringJSONToArray(String(dto.images));
+
     const discountedPrice =
-      dto.price && dto.discount
-        ? this.common.countDiscount(dto.price, dto.discount)
-        : dto.price || dto.discount;
+      dto.price && dto.discount ? countDiscount(price, discount) : null;
 
     const productPriceDetail = await this.prisma.priceDetail.create({
       data: {
         name: dto.name,
-        price: dto.price,
-        discountedPrice: discountedPrice,
+        description: dto.description,
+        price,
+        discount,
+        discountedPrice,
+        features,
+        images,
         productId,
         serviceId: null,
-        ...dto,
       },
     });
 
@@ -75,20 +81,25 @@ export class PriceDetailsService {
 
     const productDetail = await this.findPriceDetailById(productPriceDetailId);
 
-    const price = dto.price ?? productDetail.price;
-    const discount = dto.discount ?? productDetail.discount;
+    const [updatedPrice, updatedDiscount] = transformToNumber(
+      dto.price,
+      dto.discount,
+    );
+
+    const price = updatedPrice ?? productDetail.price;
+    const discount = updatedDiscount ?? productDetail.discount;
 
     const discountedPrice =
       price && discount
-        ? this.common.countDiscount(price, discount)
-        : price || discount;
+        ? countDiscount(price, discount)
+        : (productDetail.discountedPrice ?? null);
 
     return await this.prisma.priceDetail.update({
       where: {
         id: productPriceDetailId,
       },
       data: {
-        discountedPrice: discountedPrice,
+        discountedPrice,
         ...dto,
       },
     });
@@ -139,13 +150,24 @@ export class PriceDetailsService {
   ): Promise<PriceDetail> {
     await this.findServiceById(serviceId);
 
+    const [price, discount] = transformToNumber(dto.price, dto.discount);
+    const features = typeof dto.features === 'string' ? [] : dto.features;
+    const images = parseStringJSONToArray(String(dto.images));
+
+    const discountedPrice =
+      dto.price && dto.discount ? countDiscount(price, discount) : null;
+
     const servicePriceDetail = await this.prisma.priceDetail.create({
       data: {
         name: dto.name,
-        price: dto.price,
-        serviceId,
+        description: dto.description,
+        price,
+        discount,
+        discountedPrice,
+        features,
+        images,
         productId: null,
-        ...dto,
+        serviceId,
       },
     });
 
@@ -159,13 +181,27 @@ export class PriceDetailsService {
   ): Promise<PriceDetail> {
     await this.findServiceById(serviceId);
 
-    await this.findPriceDetailById(servicePriceDetailId);
+    const serviceDetail = await this.findPriceDetailById(servicePriceDetailId);
+
+    const [updatedPrice, updatedDiscount] = transformToNumber(
+      dto.price,
+      dto.discount,
+    );
+
+    const price = updatedPrice ?? serviceDetail.price;
+    const discount = updatedDiscount ?? serviceDetail.discount;
+
+    const discountedPrice =
+      price && discount
+        ? countDiscount(price, discount)
+        : (serviceDetail.discountedPrice ?? null);
 
     return await this.prisma.priceDetail.update({
       where: {
         id: servicePriceDetailId,
       },
       data: {
+        discountedPrice,
         ...dto,
       },
     });

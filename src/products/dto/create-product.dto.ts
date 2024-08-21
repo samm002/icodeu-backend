@@ -1,13 +1,14 @@
+import { Transform } from 'class-transformer';
 import {
   IsArray,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
+  Max,
 } from 'class-validator';
 
 import { ProductType } from '../../common/enums';
-import { Transform } from 'class-transformer';
 
 export class CreateProductDto {
   @IsString()
@@ -24,16 +25,30 @@ export class CreateProductDto {
 
   @IsNumber()
   @IsOptional()
-  @Transform(({ value }) => (value === '' || value === null ? null : parseFloat(value)))
+  @Transform(({ value }) =>
+    value === '' || value === null ? null : parseFloat(value),
+  )
   price: number;
 
   @IsNumber()
   @IsOptional()
-  @Transform(({ value }) => (value === '' || value === null ? null : parseFloat(value)))
+  @Max(100)
+  @Transform(({ value }) =>
+    value === '' || value === null ? null : parseFloat(value),
+  )
   discount: number;
 
   @IsArray()
   @IsOptional()
-  @Transform(({ value }) => (value ? (Array.isArray(value) ? value : [value]) : []))
+  @Transform(({ value }) =>
+    value ? (Array.isArray(value) ? value : [value]) : [],
+  )
   features: string[];
+
+  @IsArray()
+  @IsOptional()
+  @Transform(({ value }) =>
+    value ? (Array.isArray(value) ? value : [value]) : [],
+  )
+  images: string[];
 }

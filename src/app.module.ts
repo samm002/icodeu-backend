@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
+import { NestjsFormDataModule } from 'nestjs-form-data';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -22,10 +21,7 @@ import { UsersModule } from './users/users.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    // ServeStaticModule.forRoot({
-    //   rootPath: join(__dirname, '..', 'public'),
-    //   // renderPath: 'public',  // Adjust the path to your public folder
-    // }),
+    NestjsFormDataModule,
     PrismaModule,
     S3Module,
     UsersModule,

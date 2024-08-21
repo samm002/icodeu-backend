@@ -4,13 +4,12 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { User } from '@prisma/client';
-import { PrismaService } from '../prisma/prisma.service';
+import * as argon from 'argon2';
+
 import { AdminLoginDto } from './dto';
 import { AuthenticationService } from '../authentication/authentication.service';
 import { Role } from '../common/enums';
-import * as argon from 'argon2';
-import { CreateUserDto, UpdateUserDto } from '../users/dto';
+import { PrismaService } from '../prisma/prisma.service';
 import { RolesService } from '../roles/roles.service';
 
 @Controller('dashboard')

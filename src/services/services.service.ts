@@ -6,15 +6,16 @@ import {
 import { Service } from '@prisma/client';
 
 import { CreateServiceDto, UpdateServiceDto } from './dto';
-import { CommonService } from '../common/common.service';
 import { PrismaService } from '../prisma/prisma.service';
+import {
+  countDiscount,
+  parseStringJSONToArray,
+  transformToNumber,
+} from '../common/utils';
 
 @Injectable()
 export class ServicesService {
-  constructor(
-    private prisma: PrismaService,
-    private common: CommonService,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   async getAllService(): Promise<Service[]> {
     const services = await this.prisma.service.findMany();
@@ -33,17 +34,23 @@ export class ServicesService {
       throw new BadRequestException('Please input price');
     }
 
+    const [price, discount] = transformToNumber(dto.price, dto.discount);
+    const features = typeof dto.features === 'string' ? [] : dto.features;
+    const images = parseStringJSONToArray(String(dto.images));
+
     const discountedPrice =
-      dto.price && dto.discount
-        ? this.common.countDiscount(dto.price, dto.discount)
-        : dto.price || dto.discount;
+      dto.price && dto.discount ? countDiscount(price, discount) : null;
 
     const service = await this.prisma.service.create({
       data: {
         type: dto.type,
         name: dto.name,
-        discountedPrice: discountedPrice,
-        ...dto,
+        description: dto.description,
+        price,
+        discount,
+        discountedPrice,
+        features,
+        images,
       },
     });
 
@@ -58,26 +65,36 @@ export class ServicesService {
 
     if (
       dto.type !== 'multi' &&
-      service.type !== 'multi' && !dto.price && !service.price
+      service.type !== 'multi' &&
+      !dto.price &&
+      !service.price
     ) {
       throw new BadRequestException('Please input price');
     }
 
-    const price = dto.price ?? service.price;
-    const discount = dto.discount ?? service.discount;
+    const [updatedPrice, updatedDiscount] = transformToNumber(
+      dto.price,
+      dto.discount,
+    );
+
+    const price = updatedPrice ?? service.price;
+    const discount = updatedDiscount ?? service.discount;
 
     const discountedPrice =
       price && discount
-        ? this.common.countDiscount(price, discount)
-        : price || discount;
+        ? countDiscount(price, discount)
+        : (service.discountedPrice ?? null);
 
     return await this.prisma.service.update({
       where: {
         id: serviceId,
       },
       data: {
-        discountedPrice: discountedPrice,
+        discountedPrice,
         ...dto,
+      },
+      include: {
+        servicePrices: true,
       },
     });
   }
@@ -96,6 +113,9 @@ export class ServicesService {
     const service = await this.prisma.service.findUnique({
       where: {
         id: serviceId,
+      },
+      include: {
+        servicePrices: true,
       },
     });
 

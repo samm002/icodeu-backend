@@ -10,13 +10,14 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Service } from '@prisma/client';
+import { FormDataRequest } from 'nestjs-form-data';
 
 import { CreateServiceDto, UpdateServiceDto } from './dto';
 import { ServicesService } from './services.service';
 import { Public, Roles } from '../common/decorators';
 import { ResponseStatus, Role } from '../common/enums';
 import { JwtGuard, RolesGuard } from '../common/guards';
-import { ResponsePayload } from 'src/common/interfaces';
+import { ResponsePayload } from '../common/interfaces';
 
 @UseGuards(JwtGuard, RolesGuard)
 @Roles([Role.ADMIN, Role.PRODUCT_MANAGER])
@@ -46,6 +47,7 @@ export class ServicesController {
     };
   }
 
+  @FormDataRequest()
   @Post()
   async createService(
     @Body() dto: CreateServiceDto,
@@ -57,6 +59,7 @@ export class ServicesController {
     };
   }
 
+  @FormDataRequest()
   @Patch(':id')
   async updateServiceById(
     @Param('id', ParseIntPipe) serviceId: number,

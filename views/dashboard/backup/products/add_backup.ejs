@@ -12,12 +12,12 @@
             <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
               <div class="row">
                 <div class="col-12">
-                  <h2 class="tm-block-title d-inline-block">Edit Product</h2>
+                  <h2 class="tm-block-title d-inline-block">Add Product</h2>
                 </div>
               </div>
               <div class="row">
                 <form
-                  action="/api/v1/products/<%= product.id %>"
+                  action="/api/v1/products"
                   class="d-flex flex-wrap"
                   method="post"
                   enctype="multipart/form-data"
@@ -30,7 +30,6 @@
                         name="name"
                         type="text"
                         class="form-control validate"
-                        value="<%= product.name %>"
                         required
                       />
                     </div>
@@ -40,30 +39,18 @@
                         class="form-control validate"
                         rows="3"
                         name="description"
-
-                      ><%= product.description %></textarea>
+                      ></textarea>
                     </div>
                     <div class="form-group mb-3">
                       <label for="type">Type</label>
                       <select
                         class="custom-select tm-select-accounts"
                         id="type"
-                        value="<%= product.type %>"
-                        required
                         name="type"
                       >
-                        <option
-                          value="multi"
-                          selected="<%= product.type === 'multi' ? true : false %>"
-                        >
-                          Multi
-                        </option>
-                        <option
-                          value="single"
-                          selected="<%= product.type === 'single' ? true : false %>"
-                        >
-                          Single
-                        </option>
+                        <option selected>Select Type</option>
+                        <option value="multi">Multi</option>
+                        <option value="single">Single</option>
                       </select>
                     </div>
                     <div class="form-group mb-3">
@@ -73,7 +60,6 @@
                         name="price"
                         type="number"
                         class="form-control validate"
-                        value="<%= product.price %>"
                       />
                     </div>
                     <div class="row">
@@ -84,7 +70,6 @@
                           name="discount"
                           type="number"
                           class="form-control validate"
-                          value="<%= product.discount %>"
                         />
                       </div>
                       <div class="form-group mb-3 col-xs-12 col-sm-6">
@@ -94,7 +79,6 @@
                           name="discountedPrice"
                           type="number"
                           class="form-control validate"
-                          value="<%= product.discountedPrice %>"
                         />
                       </div>
                     </div>
@@ -107,8 +91,8 @@
                         rows="3"
                         id="features"
                         name="features"
-                        oninput="handleTextareaChange()"
-                      ><%= product.features %></textarea>
+                        <!-- oninput="handleTextareaChange()" -->
+                      ></textarea>
                     </div>
                     <div class="tm-product-img-dummy mx-auto">
                       <i
@@ -131,7 +115,7 @@
                       type="submit"
                       class="btn btn-primary btn-block text-uppercase"
                     >
-                      Edit Product Now
+                      Add Product Now
                     </button>
                   </div>
                 </form>

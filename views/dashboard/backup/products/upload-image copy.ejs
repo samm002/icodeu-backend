@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <%- include('../../layouts/head.ejs') %>
+</head>
+<body id="reportsPage">
+  <div id="home">
+    <%- include('../../layouts/navbar.ejs') %>
+    <div class="container tm-mt-big tm-mb-big">
+      <div class="row">
+        <div class="col-xl-9 col-lg-10 col-md-12 col-sm-12 mx-auto">
+          <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
+            <div class="row">
+              <div class="col-12">
+                <h2 class="tm-block-title d-inline-block">Add Product</h2>
+              </div>
+            </div>
+            <div class="row">
+              <form id="uploadForm" method="post" enctype="multipart/form-data">
+                <div id="image-preview" style="margin-top: 10px;"></div>
+                <div class="custom-file mt-3 mb-3">
+                  <input id="file" type="file" name="upload" style="display: none" onchange="uploadImage(event)" required/>
+                  <input type="button" class="btn btn-primary btn-block mx-auto" value="UPLOAD PRODUCT IMAGE" onclick="document.getElementById('file').click();" />
+                </div>
+                <input type="hidden" id="imageUrl" name="imageUrl">
+                <button type="submit" class="btn btn-primary btn-block text-uppercase">Add Product Now</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%- include('../../layouts/footer.ejs') %>
+  </div>
+
+  <%- include('../../layouts/script.ejs') %>
+  <script>
+    function uploadImage(event) {
+      const file = event.target.files[0];
+      const formData = new FormData();
+      formData.append('upload', file);
+
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', '/api/v1/blogs/upload', true);
+      xhr.responseType = 'json';
+
+      xhr.onload = function() {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          // Get the URL from the response
+          const imageUrl = xhr.response.url;
+
+          // Log the image URL to the console
+          console.log('Uploaded Image URL:', imageUrl);
+
+          // Update the image preview
+          const imagePreview = document.getElementById('image-preview');
+          imagePreview.innerHTML = '';
+          const img = document.createElement('img');
+          img.src = imageUrl;
+          img.style.maxWidth = '100%';
+          img.style.maxHeight = '300px';
+          imagePreview.appendChild(img);
+
+          // Update the hidden input with the image URL
+          document.getElementById('imageUrl').value = imageUrl;
+        } else {
+          console.error('Failed to upload image:', xhr.response);
+          alert('Failed to upload image. Please try again.');
+        }
+      };
+
+      xhr.onerror = function() {
+        console.error('Error uploading image');
+        alert('Error uploading image. Please try again.');
+      };
+
+      xhr.send(formData);
+    }
+  </script>
+</body>
+</html>

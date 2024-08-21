@@ -25,10 +25,9 @@ import { ResponsePayload } from '../common/interfaces';
 import { AuthenticationService } from '../authentication/authentication.service';
 import { BlogsService } from '../blogs/blogs.service';
 import { ProductsService } from '../products/products.service';
-import { PriceDetailsService } from '../price-details/price-details.service';
 import { ServicesService } from '../services/services.service';
 import { CreateUserDto, UpdateUserDto } from '../users/dto';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from '../users/users.service';
 
 @UseGuards(JwtGuard, RolesGuard)
 @Roles(['admin'])
@@ -43,22 +42,34 @@ export class AdminController {
     private userService: UsersService,
   ) {}
 
-  // View Handling route
+  @Public()
+  @Get('upload-single-image')
+  @Render('dashboard/products/upload-single-image')
+  async uploadSingleImage() {
+    return { title: 'Upload Single Image' };
+  }
 
-  // User
+  @Public()
+  @Get('upload-multiple-image')
+  @Render('dashboard/products/upload-multiple-image')
+  async uploadMultipleImage() {
+    return { title: 'Upload Single Image' };
+  }
+
+  // View Handling route
   @Get('dashboards')
   @Render('dashboard/index')
-  async dashboard() {
+  async dashboard(@GetUser("name") name: string) {
     const users = await this.userService.getAllUser();
     return { users, title: 'Dashboard' };
   }
 
-  // view rendernya tolong diatur ulang aja
+  // User
   @Get('users')
   @Render('dashboard/users/index')
   async getAllUsers(@GetUser("name") name: string) {
     const users = await this.userService.getAllUser();
-    return { users, title: 'Users', name };
+    return { users, title: 'Users' };
   }
 
   @Get('users/create')
@@ -84,17 +95,17 @@ export class AdminController {
   // Product
   @Get('products')
   @Render('dashboard/products/index')
-  async getAllProduct() {
+  async getAllProduct(@GetUser("name") name: string) {
     const products = await this.productService.getAllProduct();
     return { products, title: 'Products' };
   }
 
   @Get('products/create')
-  @Render('dashboard/products/add')
-  async createProductView() {
+  @Render('dashboard/products/add') 
+  async createProductView(@GetUser("name") name: string) {
     return { title: 'Create Product' };
   }
-
+  
   @Get('products/:id')
   @Render('dashboard/products/show')
   async getProductById(@Param('id', ParseIntPipe) productId: number) {
@@ -112,14 +123,14 @@ export class AdminController {
   // Service
   @Get('services')
   @Render('dashboard/services/index')
-  async services() {
+  async services(@GetUser("name") name: string) {
     const services = await this.serviceService.getAllService();
     return { services, title: 'Services' };
   }
 
   @Get('services/create')
   @Render('dashboard/services/index')
-  async createServiceView() {
+  async createServiceView(@GetUser("name") name: string) {
     return { title: 'Create Service' };
   }
 
@@ -140,14 +151,14 @@ export class AdminController {
   // Blog
   @Get('blogs')
   @Render('dashboard/blogs/index')
-  async blogs() {
+  async blogs(@GetUser("name") name: string) {
     const blogs = await this.blogService.getAllBlog();
     return { blogs, title: 'Blogs' };
   }
 
   @Get('blogs/create')
   @Render('dashboard/blogs/add')
-  async createBlogView() {
+  async createBlogView(@GetUser("name") name: string) {
     return { title: 'Create Blog' };
   }
 
@@ -157,7 +168,7 @@ export class AdminController {
     const blog = await this.blogService.getBlogById(blogId);
     return { blog, title: `Blog ${blogId}` };
   }
-
+  
   @Get('blogs/:id/update')
   @Render('dashboard/blogs/edit')
   async updateBlogView(@Param('id', ParseIntPipe) blogId: number) {
@@ -165,8 +176,8 @@ export class AdminController {
     return { blog, title: `Update bBog ${blogId}` };
   }
 
-  // Price Detail (Ongoing)
-  // Role (Ongoing)
+  // Price Detail?
+  // Role?
 
   // Admin Authentication
   @Public()

@@ -7,8 +7,4 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123
-      POSTGRES_DB: nest
-    networks:
-      - freecodecamp
-networks:
-  freecodecamp:
+      POSTGRES_DB: icodeu

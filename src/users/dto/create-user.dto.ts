@@ -1,7 +1,6 @@
 import {
   IsEmail,
   IsNotEmpty,
-  IsNumber,
   IsOptional,
   IsString,
   Matches,
@@ -28,4 +27,8 @@ export class CreateUserDto {
   @Matches(/^\d+$/, { message: 'Phone number must be a number' })
   @IsOptional()
   phoneNumber?: string;
+
+  @IsString()
+  @IsOptional()
+  profilePicture?: string;
 }

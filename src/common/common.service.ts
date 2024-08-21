@@ -12,12 +12,6 @@ export class CommonService {
     private s3Service: S3Service,
   ) {}
 
-  countDiscount(price: number, discount: number): number {
-    const discountPrice = price * (discount / 100);
-
-    return price - discountPrice;
-  }
-
   async uploadFile(
     file: Express.Multer.File,
     folderName: string,
@@ -55,5 +49,49 @@ export class CommonService {
     } finally {
       fs.unlinkSync(file.path);
     }
+  }
+
+  async uploadFiles(
+    files: Express.Multer.File[],
+    folderName: string,
+  ): Promise<{ urls: string[] }> {
+    const urls = [];
+    for (const file of files) {
+      const fileStream = fs.createReadStream(file.path);
+
+      if (!fileStream) {
+        throw new Error('Failed to create file stream');
+      }
+
+      const contentType = file.mimetype || 'application/octet-stream';
+
+      const upload = new Upload({
+        client: this.s3Service,
+        params: {
+          ACL: 'public-read',
+          Bucket: this.config.get('S3_BUCKET'),
+          Key: `images/${folderName}/${file.filename}`,
+          Body: fileStream,
+          ContentType: contentType,
+        },
+        tags: [],
+        queueSize: 4,
+        partSize: 1024 * 1024 * 5,
+        leavePartsOnError: false,
+      });
+
+      try {
+        const data = await upload.done();
+        const objectUrl = `https://${this.config.get('S3_BUCKET')}.s3.${this.config.get('S3_REGION')}.amazonaws.com/${data.Key}`;
+        urls.push(objectUrl);
+      } catch (error) {
+        console.error({ error });
+        throw new Error(`Failed to upload file: ${error.message}`);
+      } finally {
+        fs.unlinkSync(file.path);
+      }
+    }
+
+    return { urls };
   }
 }

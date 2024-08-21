@@ -14,6 +14,7 @@ CREATE TABLE "users" (
     "name" TEXT,
     "address" TEXT,
     "phoneNumber" TEXT,
+    "profilePicture" TEXT,
     "refreshToken" TEXT,
     "roleId" INTEGER NOT NULL,
 
@@ -41,6 +42,7 @@ CREATE TABLE "priceDetails" (
     "discount" DOUBLE PRECISION,
     "discountedPrice" DOUBLE PRECISION,
     "features" TEXT[],
+    "images" TEXT[],
     "productId" INTEGER,
     "serviceId" INTEGER,
 
@@ -59,6 +61,7 @@ CREATE TABLE "products" (
     "discount" DOUBLE PRECISION,
     "discountedPrice" DOUBLE PRECISION,
     "features" TEXT[],
+    "images" TEXT[],
 
     CONSTRAINT "products_pkey" PRIMARY KEY ("id")
 );
@@ -75,6 +78,7 @@ CREATE TABLE "services" (
     "discount" DOUBLE PRECISION,
     "discountedPrice" DOUBLE PRECISION,
     "features" TEXT[],
+    "images" TEXT[],
 
     CONSTRAINT "services_pkey" PRIMARY KEY ("id")
 );

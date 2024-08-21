@@ -57,12 +57,12 @@
                   <div class="tm-product-img-dummy mx-auto">
                     <i class="fas fa-cloud-upload-alt tm-upload-icon" onclick="document.getElementById('fileInput').click();"></i>
                   </div>
-                  <div id="imagePreview" style="margin-top: 10px;"></div>
                   <div class="custom-file mt-3 mb-3">
-                    <input id="fileInput" type="file" name="uploads[]" multiple style="display: none" onchange="uploadImage(event)" />
+                    <input id="fileInput" type="file" name="upload" style="display: none" onchange="uploadImage(event)" />
                     <input type="button" class="btn btn-primary btn-block mx-auto" value="UPLOAD PRODUCT IMAGE" onclick="document.getElementById('fileInput').click();" />
                   </div>
-                  <input type="hidden" id="images" name="images">
+                  <div id="imagePreview" style="margin-top: 10px;"></div>
+                  <input type="hidden" id="image" name="image">
                 </div>
                 <div class="col-12">
                   <button type="submit" class="btn btn-primary btn-block text-uppercase">Add Product Now</button>
@@ -80,41 +80,36 @@
   <%- include('../../layouts/script.ejs') %>
   <script>
     function uploadImage(event) {
-      const files = event.target.files;
+      const file = event.target.files[0];
       const formData = new FormData();
-
-      Array.from(files).forEach(file => {
-        formData.append('uploads[]', file);
-      });
+      formData.append('upload', file);
 
       const xhr = new XMLHttpRequest();
-      xhr.open('POST', '/api/v1/upload-multiple', true);
+      xhr.open('POST', '/api/v1/blogs/upload', true);
       xhr.responseType = 'json';
 
       xhr.onload = function() {
         if (xhr.status >= 200 && xhr.status < 300) {
           // Get the URL from the response
-          const imageUrls = xhr.response.urls;
+          const imageUrl = xhr.response.url;
 
           // Log the image URL to the console
-          console.log('Uploaded Image URL:', imageUrls);
+          console.log('Uploaded Image URL:', imageUrl);
 
           // Update the image preview
           const imagePreview = document.getElementById('imagePreview');
           imagePreview.innerHTML = '';
-          imageUrls.forEach(url => {
-            const img = document.createElement('img');
-            img.src = url;
-            img.style.maxWidth = '100%';
-            img.style.maxHeight = '300px';
-            imagePreview.appendChild(img);
-          });
+          const img = document.createElement('img');
+          img.src = imageUrl;
+          img.style.maxWidth = '100%';
+          img.style.maxHeight = '300px';
+          imagePreview.appendChild(img);
 
           // Update the hidden input with the image URL
-          document.getElementById('images').value = JSON.stringify(imageUrls);
+          document.getElementById('image').value = imageUrl;
         } else {
-          console.error('Failed to upload images:', xhr.response);
-          alert('Failed to upload images. Please try again.');
+          console.error('Failed to upload image:', xhr.response);
+          alert('Failed to upload image. Please try again.');
         }
       };
 

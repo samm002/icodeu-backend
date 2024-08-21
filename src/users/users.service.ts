@@ -23,6 +23,7 @@ export class UsersService {
       name: user.name,
       address: user.address,
       phoneNumber: user.phoneNumber,
+      profilePicture: user.profilePicture,
       role: roleName,
     };
 
@@ -41,11 +42,12 @@ export class UsersService {
 
     const roleName = await this.roleService.getRoleName(user.roleId);
 
-    const userData = {
+    const userData: UserData = {
       email: user.email,
       name: user.name,
       address: user.address,
       phoneNumber: user.phoneNumber,
+      profilePicture: user.profilePicture,
       role: roleName,
     };
 
@@ -64,14 +66,25 @@ export class UsersService {
     return users;
   }
 
-  async getUserById(userId: number): Promise<User> {
+  async getUserById(userId: number): Promise<UserData> {
     const user = await this.prisma.user.findUnique({
       where: {
         id: userId,
       },
     });
 
-    return user;
+    const roleName = await this.roleService.getRoleName(user.roleId);
+
+    const userData: UserData = {
+      email: user.email,
+      name: user.name,
+      address: user.address,
+      phoneNumber: user.phoneNumber,
+      profilePicture: user.profilePicture,
+      role: roleName,
+    };
+
+    return userData;
   }
 
   async createUser(dto: CreateUserDto, roleName: string): Promise<User> {
