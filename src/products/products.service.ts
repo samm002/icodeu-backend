@@ -40,7 +40,12 @@ export class ProductsService {
     }
 
     const [price, discount] = transformToNumber(dto.price, dto.discount);
-    const features = typeof dto.features === 'string' ? [dto.features] : dto.features;
+    const features =
+      typeof dto.features === 'string'
+        ? dto.features === ''
+          ? []
+          : parseStringJSONToArray(dto.features)
+        : dto.features;
     const images = parseStringJSONToArray(String(dto.images));
 
     const discountedPrice =
@@ -86,7 +91,11 @@ export class ProductsService {
     const price = updatedPrice ?? product.price;
     const discount = updatedDiscount ?? product.discount;
 
-    const features = typeof dto.features === 'string' ? [] : dto.features;
+    const features = dto.features
+      ? typeof dto.features === 'string'
+        ? []
+        : parseStringJSONToArray(String(dto.features))
+      : product.features;
     const images = dto.images
       ? parseStringJSONToArray(String(dto.images))
       : product.images;

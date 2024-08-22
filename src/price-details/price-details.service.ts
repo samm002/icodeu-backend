@@ -49,7 +49,12 @@ export class PriceDetailsService {
     await this.findProductById(productId);
 
     const [price, discount] = transformToNumber(dto.price, dto.discount);
-    const features = typeof dto.features === 'string' ? [] : dto.features;
+    const features =
+      typeof dto.features === 'string'
+        ? dto.features === ''
+          ? []
+          : parseStringJSONToArray(dto.features)
+        : dto.features;
     const images = parseStringJSONToArray(String(dto.images));
 
     const discountedPrice =
@@ -89,7 +94,12 @@ export class PriceDetailsService {
     const price = updatedPrice ?? productDetail.price;
     const discount = updatedDiscount ?? productDetail.discount;
 
-    const features = typeof dto.features === 'string' ? [] : dto.features;
+    const features = dto.features
+      ? typeof dto.features === 'string'
+        ? []
+        : parseStringJSONToArray(String(dto.features))
+      : productDetail.features;
+
     const images = parseStringJSONToArray(String(dto.images));
 
     const discountedPrice =
@@ -106,7 +116,7 @@ export class PriceDetailsService {
         description: dto.description,
         price,
         discount,
-        discountedPrice, 
+        discountedPrice,
         features,
         images,
       },
@@ -159,7 +169,12 @@ export class PriceDetailsService {
     await this.findServiceById(serviceId);
 
     const [price, discount] = transformToNumber(dto.price, dto.discount);
-    const features = typeof dto.features === 'string' ? [] : dto.features;
+    const features =
+      typeof dto.features === 'string'
+        ? dto.features === ''
+          ? []
+          : parseStringJSONToArray(dto.features)
+        : dto.features;
     const images = parseStringJSONToArray(String(dto.images));
 
     const discountedPrice =
@@ -199,7 +214,11 @@ export class PriceDetailsService {
     const price = updatedPrice ?? serviceDetail.price;
     const discount = updatedDiscount ?? serviceDetail.discount;
 
-    const features = typeof dto.features === 'string' ? [] : dto.features;
+    const features = dto.features
+      ? typeof dto.features === 'string'
+        ? []
+        : parseStringJSONToArray(String(dto.features))
+      : serviceDetail.features;
     const images = parseStringJSONToArray(String(dto.images));
 
     const discountedPrice =
@@ -216,7 +235,7 @@ export class PriceDetailsService {
         description: dto.description,
         price,
         discount,
-        discountedPrice, 
+        discountedPrice,
         features,
         images,
       },
