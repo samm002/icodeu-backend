@@ -31,7 +31,9 @@ export class ServicesService {
 
   async createService(dto: CreateServiceDto): Promise<Service> {
     if (dto.type !== 'multi' && !dto.price) {
-      throw new BadRequestException('Please input price');
+      throw new BadRequestException(
+        "Please input price for product type 'single'",
+      );
     }
 
     const [price, discount] = transformToNumber(dto.price, dto.discount);
@@ -98,7 +100,7 @@ export class ServicesService {
         description: dto.description,
         price,
         discount,
-        discountedPrice, 
+        discountedPrice,
         features,
         images,
       },

@@ -35,12 +35,12 @@ export class ProductsService {
   async createProduct(dto: CreateProductDto): Promise<Product> {
     if (dto.type !== 'multi' && !dto.price) {
       throw new BadRequestException(
-        "Please input price for product type 'multi'",
+        "Please input price for product type 'single'",
       );
     }
 
     const [price, discount] = transformToNumber(dto.price, dto.discount);
-    const features = typeof dto.features === 'string' ? [] : dto.features;
+    const features = typeof dto.features === 'string' ? [dto.features] : dto.features;
     const images = parseStringJSONToArray(String(dto.images));
 
     const discountedPrice =
@@ -68,7 +68,7 @@ export class ProductsService {
   ): Promise<Product> {
     console.log({ dto });
     const product = await this.findProductById(productId);
-
+    console.log({ product });
     if (
       dto.type !== 'multi' &&
       product.type !== 'multi' &&
@@ -87,7 +87,9 @@ export class ProductsService {
     const discount = updatedDiscount ?? product.discount;
 
     const features = typeof dto.features === 'string' ? [] : dto.features;
-    const images = parseStringJSONToArray(String(dto.images));
+    const images = dto.images
+      ? parseStringJSONToArray(String(dto.images))
+      : product.images;
 
     const discountedPrice =
       price && discount
@@ -104,7 +106,7 @@ export class ProductsService {
         description: dto.description,
         price,
         discount,
-        discountedPrice, 
+        discountedPrice,
         features,
         images,
       },
