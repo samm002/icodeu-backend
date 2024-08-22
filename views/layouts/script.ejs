@@ -9,6 +9,22 @@
 <script src="/js/tooplate-scripts.js"></script>
 
 <script>
+  document.getElementById('price').oninput = calculateProduct;
+  document.getElementById('discount').oninput = calculateProduct;
+
+  function calculateProduct() {
+    const price = parseFloat(document.getElementById('price').value) || 0;
+    const discount = parseFloat(document.getElementById('discount').value) || 0;
+
+    const discountedPrice = price * (discount / 100);
+
+    const result = price - discountedPrice;
+
+    document.getElementById('discountedPrice').value = result.toString();
+  }
+</script>
+
+<script>
   Chart.defaults.global.defaultFontColor = 'white';
   let ctxLine,
     ctxBar,

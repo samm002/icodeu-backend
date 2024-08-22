@@ -45,7 +45,7 @@
                     <div class="form-group mb-3">
                       <label for="type">Type</label>
                       <select
-                        class="custom-select select-accounts"
+                        class="custom-select"
                         id="type"
                         name="type"
                       >
@@ -163,15 +163,5 @@
 
     <%- include('../../layouts/script.ejs') %> 
     <%- include('../../layouts/upload.ejs') %>
-    <script>
-      const price = document.getElementById('price');
-      const discount = document.getElementById('discount');
-
-      const discountPrice = Number(price.value) * (Number(discount.value) / 100);
-      discount.addEventListener('change', () => {
-        console.log("🚀 ~ discountPrice:", discountPrice)
-        document.getElementById('discountedPrice').value = price - discountPrice
-      })
-    </script>
   </body>
 </html>

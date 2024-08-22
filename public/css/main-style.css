@@ -625,6 +625,15 @@ img.displaySlide {
   border: none;
   cursor: pointer;
 }
+
+.back-btn-edit{
+  color: #f5a623;
+  font-weight: 600;
+}
+.back-btn-edit:hover{
+  color: #b17a21;
+}
+
 @keyframes fade {
   from {
     opacity: 0.5;
