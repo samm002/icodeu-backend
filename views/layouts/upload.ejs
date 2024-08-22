@@ -2,12 +2,11 @@
   let slides;
   let slideIndex = 0;
   let intervalId = null;
-
+  
   document.addEventListener('DOMContentLoaded', initializeSlider);
-
+  
   function initializeSlider() {
-    slides = document.querySelectorAll('#imagePreview img');
-    console.log("🚀 ~ initializeSlider ~ slides:", slides)
+    slides = document.querySelectorAll('.slides img');
     if (slides.length > 0) {
       slides[slideIndex].classList.add('displaySlide');
       intervalId = setInterval(nextSlide, 5000);
@@ -41,9 +40,6 @@
         // Get the URL from the response
         const imageUrls = xhr.response.urls;
 
-        // Log the image URL to the console
-        console.log('Uploaded Image URL:', imageUrls);
-
         // Update the image preview
         const imagePreview = document.getElementById('imagePreview');
         imagePreview.innerHTML = '';
@@ -64,13 +60,11 @@
         document.getElementById('images').value = JSON.stringify(imageUrls);
         document.getElementById('upload-icon').style.display = 'none';
       } else {
-        console.error('Failed to upload images:', xhr.response);
         alert('Failed to upload images. Please try again.');
       }
     };
 
     xhr.onerror = function () {
-      console.error('Error uploading image');
       alert('Error uploading image. Please try again.');
     };
 

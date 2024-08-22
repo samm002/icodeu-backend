@@ -163,5 +163,15 @@
 
     <%- include('../../layouts/script.ejs') %> 
     <%- include('../../layouts/upload.ejs') %>
+    <script>
+      const price = document.getElementById('price');
+      const discount = document.getElementById('discount');
+
+      const discountPrice = Number(price.value) * (Number(discount.value) / 100);
+      discount.addEventListener('change', () => {
+        console.log("🚀 ~ discountPrice:", discountPrice)
+        document.getElementById('discountedPrice').value = price - discountPrice
+      })
+    </script>
   </body>
 </html>

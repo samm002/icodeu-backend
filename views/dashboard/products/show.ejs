@@ -109,20 +109,26 @@
                         oninput="handleTextareaChange()"
                       ><%= product.features %></textarea>
                     </div>
-                    <div class="product-img-dummy mx-auto">
-                      <i
-                        class="fas fa-cloud-upload-alt upload-icon"
-                        onclick="document.getElementById('fileInput').click();"
-                      ></i>
-                    </div>
-                    <div class="custom-file mt-3 mb-3">
-                      <input id="fileInput" type="file" style="display: none" />
-                      <input
+                    <div class="slider" id="upload-icon">
+                      <div class="slides">
+                        <% product.images.map((image) => { %>
+                          <img class="slide" src="<%= image %>" alt="Image">
+                        <% }) %>
+                      </div>
+                      <button
                         type="button"
-                        class="btn btn-primary btn-block mx-auto"
-                        value="UPLOAD PRODUCT IMAGE"
-                        onclick="document.getElementById('fileInput').click();"
-                      />
+                        class="prev"
+                        onclick="prevSlide()"
+                      >
+                        &#8249;
+                      </button>
+                      <button
+                        type="button"
+                        class="next"
+                        onclick="nextSlide()"
+                      >
+                        &#8250;
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -136,20 +142,6 @@
     </div>
 
     <%- include('../../layouts/script.ejs') %>
-    <script>
-      function handleTextareaChange() {
-        const textareaValue = document.getElementById('features').value;
-        const linesArray = textareaValue.split('\n');
-
-        // Optionally filter out empty lines
-        const filteredArray = linesArray.filter((line) => line.trim() !== '');
-
-        document.getElementById('output').innerText = JSON.stringify(
-          filteredArray,
-          null,
-          2,
-        );
-      }
-    </script>
+    <%- include('../../layouts/upload.ejs') %>
   </body>
 </html>
