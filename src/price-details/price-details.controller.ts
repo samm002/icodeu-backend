@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { PriceDetail } from '@prisma/client';
@@ -17,6 +18,7 @@ import { Public, Roles } from '../common/decorators';
 import { ResponseStatus, Role } from '../common/enums';
 import { JwtGuard, RolesGuard } from '../common/guards';
 import { ResponsePayload } from '../common/interfaces';
+import { Response } from 'express';
 
 @UseGuards(JwtGuard, RolesGuard)
 @Roles([Role.ADMIN, Role.PRODUCT_MANAGER])
@@ -57,7 +59,13 @@ export class PriceDetailsController {
   async createProductPriceDetail(
     @Param('productId', ParseIntPipe) productId: number,
     @Body() dto: CreatePriceDetailDto,
+    // @Res() res: Response,
   ): Promise<ResponsePayload<PriceDetail>> {
+    // const productPriceDetail = await this.priceDetailService.createProductPriceDetail(
+    //   productId,
+    //   dto,
+    // );
+    // res.redirect(`/admin/productPriceDetail/${productPriceDetail.id}`);
     return {
       status: ResponseStatus.SUCCESS,
       message: `Create new Product Price Detail in Product id ${productId}`,
@@ -73,7 +81,14 @@ export class PriceDetailsController {
     @Param('productId', ParseIntPipe) productId: number,
     @Param('id', ParseIntPipe) productPriceDetailId: number,
     @Body() dto: UpdatePriceDetailDto,
+    // @Res() res: Response,
   ): Promise<ResponsePayload<PriceDetail>> {
+    // const productPriceDetail = await this.priceDetailService.updateProductPriceDetailById(
+    //   productId,
+    //   productPriceDetailId,
+    //   dto,
+    // );
+    // res.redirect(`/admin/productPriceDetail/${productPriceDetail.id}`);
     return {
       status: ResponseStatus.SUCCESS,
       message: `Update Product Price Detail id ${productPriceDetailId} in Product id ${productId}`,
@@ -133,8 +148,14 @@ export class PriceDetailsController {
   async createservicePriceDetail(
     @Param('serviceId', ParseIntPipe) serviceId: number,
     @Body() dto: CreatePriceDetailDto,
+    // @Res() res: Response,
   ): Promise<ResponsePayload<PriceDetail>> {
     return {
+    // const productPriceDetail = await this.priceDetailService.createProductPriceDetail(
+    //   productId,
+    //   dto,
+    // );
+    // res.redirect(`/admin/productPriceDetail/${productPriceDetail.id}`);
       status: ResponseStatus.SUCCESS,
       message: `Create new Service Price Detail in Service id ${serviceId}`,
       data: await this.priceDetailService.createServicePriceDetail(
@@ -149,7 +170,14 @@ export class PriceDetailsController {
     @Param('serviceId', ParseIntPipe) serviceId: number,
     @Param('id', ParseIntPipe) servicePriceDetailId: number,
     @Body() dto: UpdatePriceDetailDto,
+    // @Res() res: Response,
   ): Promise<ResponsePayload<PriceDetail>> {
+    // const servicePriceDetail = await this.priceDetailService.updateServicePriceDetailById(
+    //   serviceId,
+    //   servicePriceDetailId,
+    //   dto,
+    // );
+    // res.redirect(`/admin/servicePriceDetail/${servicePriceDetail.id}`);
     return {
       status: ResponseStatus.SUCCESS,
       message: `Update Service Price Detail id ${servicePriceDetailId} in Service id ${serviceId}`,

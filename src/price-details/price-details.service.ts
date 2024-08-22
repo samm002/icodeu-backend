@@ -96,8 +96,10 @@ export class PriceDetailsService {
 
     const features = dto.features
       ? typeof dto.features === 'string'
-        ? []
-        : parseStringJSONToArray(String(dto.features))
+        ? dto.features === ''
+          ? []
+          : parseStringJSONToArray(String(dto.features))
+        : dto.features
       : productDetail.features;
 
     const images = parseStringJSONToArray(String(dto.images));
@@ -169,12 +171,14 @@ export class PriceDetailsService {
     await this.findServiceById(serviceId);
 
     const [price, discount] = transformToNumber(dto.price, dto.discount);
+    
     const features =
       typeof dto.features === 'string'
         ? dto.features === ''
           ? []
           : parseStringJSONToArray(dto.features)
         : dto.features;
+        
     const images = parseStringJSONToArray(String(dto.images));
 
     const discountedPrice =
@@ -216,9 +220,12 @@ export class PriceDetailsService {
 
     const features = dto.features
       ? typeof dto.features === 'string'
-        ? []
-        : parseStringJSONToArray(String(dto.features))
+        ? dto.features === ''
+          ? []
+          : parseStringJSONToArray(String(dto.features))
+        : dto.features
       : serviceDetail.features;
+
     const images = parseStringJSONToArray(String(dto.images));
 
     const discountedPrice =

@@ -40,12 +40,14 @@ export class ProductsService {
     }
 
     const [price, discount] = transformToNumber(dto.price, dto.discount);
+
     const features =
       typeof dto.features === 'string'
         ? dto.features === ''
           ? []
           : parseStringJSONToArray(dto.features)
         : dto.features;
+
     const images = parseStringJSONToArray(String(dto.images));
 
     const discountedPrice =
@@ -71,9 +73,7 @@ export class ProductsService {
     productId: number,
     dto: UpdateProductDto,
   ): Promise<Product> {
-    console.log({ dto });
     const product = await this.findProductById(productId);
-    console.log({ product });
     if (
       dto.type !== 'multi' &&
       product.type !== 'multi' &&
@@ -93,9 +93,12 @@ export class ProductsService {
 
     const features = dto.features
       ? typeof dto.features === 'string'
-        ? []
-        : parseStringJSONToArray(String(dto.features))
+        ? dto.features === ''
+          ? []
+          : parseStringJSONToArray(String(dto.features))
+        : dto.features
       : product.features;
+
     const images = dto.images
       ? parseStringJSONToArray(String(dto.images))
       : product.images;

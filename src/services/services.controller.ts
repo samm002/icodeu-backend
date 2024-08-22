@@ -7,10 +7,12 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { Service } from '@prisma/client';
 import { FormDataRequest } from 'nestjs-form-data';
+import { Response } from 'express';
 
 import { CreateServiceDto, UpdateServiceDto } from './dto';
 import { ServicesService } from './services.service';
@@ -51,12 +53,10 @@ export class ServicesController {
   @Post()
   async createService(
     @Body() dto: CreateServiceDto,
-  ): Promise<ResponsePayload<Service>> {
-    return {
-      status: ResponseStatus.SUCCESS,
-      message: 'Create New Service',
-      data: await this.serviceService.createService(dto),
-    };
+    @Res() res: Response,
+  ): Promise<void> {
+    const service = await this.serviceService.createService(dto);
+    res.redirect(`/admin/services/${service.id}`);
   }
 
   @FormDataRequest()
@@ -64,12 +64,10 @@ export class ServicesController {
   async updateServiceById(
     @Param('id', ParseIntPipe) serviceId: number,
     @Body() dto: UpdateServiceDto,
-  ): Promise<ResponsePayload<Service>> {
-    return {
-      status: ResponseStatus.SUCCESS,
-      message: `Update Service by id ${serviceId}`,
-      data: await this.serviceService.updateServiceById(serviceId, dto),
-    };
+    @Res() res: Response,
+  ): Promise<void> {
+    const service = await this.serviceService.updateServiceById(serviceId, dto);
+    res.redirect(`/admin/services/${service.id}`);
   }
 
   @Delete(':id')

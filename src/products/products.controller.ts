@@ -7,10 +7,12 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { Product } from '@prisma/client';
 import { FormDataRequest } from 'nestjs-form-data';
+import { Response } from 'express';
 
 import { CreateProductDto, UpdateProductDto } from './dto';
 import { ProductsService } from './products.service';
@@ -51,29 +53,25 @@ export class ProductsController {
   @Post()
   async createProduct(
     @Body() dto: CreateProductDto,
-  ): Promise<ResponsePayload<Product>> {
-    return {
-      status: ResponseStatus.SUCCESS,
-      message: `Create New Product`,
-      data: await this.productService.createProduct(dto),
-    };
+    @Res() res: Response,
+  ): Promise<void> {
+    const product = await this.productService.createProduct(dto);
+    res.redirect(`/admin/products/${product.id}`);
   }
 
   @FormDataRequest()
   @Patch(':id')
-  async updateRoleById(
+  async updateProductById(
     @Param('id', ParseIntPipe) productId: number,
     @Body() dto: UpdateProductDto,
-  ): Promise<ResponsePayload<Product>> {
-    return {
-      status: ResponseStatus.SUCCESS,
-      message: `Update Product by id ${productId}`,
-      data: await this.productService.updateProductById(productId, dto),
-    };
+    @Res() res: Response,
+  ): Promise<void> {
+    const product = await this.productService.updateProductById(productId, dto);
+    res.redirect(`/admin/products/${product.id}`);
   }
 
   @Delete(':id')
-  async deleteRoleById(
+  async deleteProductById(
     @Param('id', ParseIntPipe) productId: number,
   ): Promise<ResponsePayload<Product>> {
     return {
