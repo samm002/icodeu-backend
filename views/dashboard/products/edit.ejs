@@ -6,18 +6,18 @@
   <body id="reportsPage">
     <div id="home">
       <%- include('../../layouts/navbar.ejs') %>
-      <div class="container tm-mt-big tm-mb-big">
+      <div class="container mt-big mb-big">
         <div class="row">
           <div class="col-xl-9 col-lg-10 col-md-12 col-sm-12 mx-auto">
-            <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
+            <div class="bg-primary-dark block block-h-auto">
               <div class="row">
                 <div class="col-12">
-                  <h2 class="tm-block-title d-inline-block">Edit Product</h2>
+                  <h2 class="block-title d-inline-block">Edit Product</h2>
                 </div>
               </div>
               <div class="row">
                 <form
-                  action="/api/v1/products/<%= product.id %>"
+                  action="/api/v1/products/<%= product.id %>?_method=patch"
                   class="d-flex flex-wrap"
                   method="post"
                   enctype="multipart/form-data"
@@ -40,13 +40,13 @@
                         class="form-control validate"
                         rows="3"
                         name="description"
-
-                      ><%= product.description %></textarea>
+                      ><%= product.description %></textarea
+                      >
                     </div>
                     <div class="form-group mb-3">
                       <label for="type">Type</label>
                       <select
-                        class="custom-select tm-select-accounts"
+                        class="custom-select select-accounts"
                         id="type"
                         value="<%= product.type %>"
                         required
@@ -92,9 +92,10 @@
                         <input
                           id="discountedPrice"
                           name="discountedPrice"
-                          type="number"
+                          type="text"
                           class="form-control validate"
                           value="<%= product.discountedPrice %>"
+                          disabled
                         />
                       </div>
                     </div>
@@ -106,24 +107,70 @@
                         class="form-control validate"
                         rows="3"
                         id="features"
-                        name="features"
                         oninput="handleTextareaChange()"
                       ><%= product.features %></textarea>
+                      <input type="hidden" id="feature" name="features" />
                     </div>
-                    <div class="tm-product-img-dummy mx-auto">
-                      <i
-                        class="fas fa-cloud-upload-alt tm-upload-icon"
-                        onclick="document.getElementById('fileInput').click();"
-                      ></i>
-                    </div>
-                    <div class="custom-file mt-3 mb-3">
-                      <input id="fileInput" type="file" style="display: none" />
-                      <input
-                        type="button"
-                        class="btn btn-primary btn-block mx-auto"
-                        value="UPLOAD PRODUCT IMAGE"
-                        onclick="document.getElementById('fileInput').click();"
-                      />
+                    <div class="mb-3">
+                      <!-- image preview before on onchange -->
+                      <div class="slider" id="upload-icon">
+                        <div class="slides">
+                          <% product.images.map((image) => { %>
+                            <img class="slide" src="<%= image %>" alt="Image">
+                          <% }) %>
+                        </div>
+                        <button
+                          type="button"
+                          class="prev"
+                          onclick="prevSlide()"
+                        >
+                          &#8249;
+                        </button>
+                        <button
+                          type="button"
+                          class="next"
+                          onclick="nextSlide()"
+                        >
+                          &#8250;
+                        </button>
+                      </div>
+                      <!-- image preview after on onchange -->
+                      <div class="slider">
+                        <div class="slides" id="imagePreview"></div>
+                        <button
+                          type="button"
+                          class="prev"
+                          onclick="prevSlide()"
+                        >
+                          &#8249;
+                        </button>
+                        <button
+                          type="button"
+                          class="next"
+                          onclick="nextSlide()"
+                        >
+                          &#8250;
+                        </button>
+                      </div>
+                      <!-- image upload url -->
+                      <input type="hidden" id="images" name="images" />
+                      <!-- image upload button -->
+                      <div class="custom-file mt-3 mb-3">
+                        <input
+                          id="fileInput"
+                          type="file"
+                          name="uploads[]"
+                          multiple
+                          style="display: none"
+                          onchange="uploadImage(event)"
+                        />
+                        <input
+                          type="button"
+                          class="btn btn-primary btn-block mx-auto"
+                          value="UPLOAD PRODUCT IMAGE"
+                          onclick="document.getElementById('fileInput').click();"
+                        />
+                      </div>
                     </div>
                   </div>
                   <div class="col-12">
@@ -144,21 +191,7 @@
       <%- include('../../layouts/footer.ejs') %>
     </div>
 
-    <%- include('../../layouts/script.ejs') %>
-    <script>
-      function handleTextareaChange() {
-        const textareaValue = document.getElementById('features').value;
-        const linesArray = textareaValue.split('\n');
-
-        // Optionally filter out empty lines
-        const filteredArray = linesArray.filter((line) => line.trim() !== '');
-
-        document.getElementById('output').innerText = JSON.stringify(
-          filteredArray,
-          null,
-          2,
-        );
-      }
-    </script>
+    <%- include('../../layouts/script.ejs') %> 
+    <%- include('../../layouts/upload.ejs') %>
   </body>
 </html>

@@ -1,0 +1,103 @@
+<script>
+  let slides;
+  let slideIndex = 0;
+  let intervalId = null;
+
+  document.addEventListener('DOMContentLoaded', initializeSlider);
+
+  function initializeSlider() {
+    slides = document.querySelectorAll('#imagePreview img');
+    console.log("🚀 ~ initializeSlider ~ slides:", slides)
+    if (slides.length > 0) {
+      slides[slideIndex].classList.add('displaySlide');
+      intervalId = setInterval(nextSlide, 5000);
+    }
+  }
+
+  function handleTextareaChange() {
+    const textareaValue = document.getElementById('features').value;
+    const linesArray = textareaValue.split('\n');
+
+    // Optionally filter out empty lines
+    const filteredArray = linesArray.filter((line) => line.trim() !== '');
+
+    document.getElementById('feature').value = JSON.stringify(filteredArray);
+  }
+
+  function uploadImage(event) {
+    const files = event.target.files;
+    const formData = new FormData();
+
+    Array.from(files).forEach((file) => {
+      formData.append('uploads[]', file);
+    });
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/v1/upload-multiple', true);
+    xhr.responseType = 'json';
+
+    xhr.onload = function () {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        // Get the URL from the response
+        const imageUrls = xhr.response.urls;
+
+        // Log the image URL to the console
+        console.log('Uploaded Image URL:', imageUrls);
+
+        // Update the image preview
+        const imagePreview = document.getElementById('imagePreview');
+        imagePreview.innerHTML = '';
+        imageUrls.forEach((url, index) => {
+          const img = document.createElement('img');
+          img.src = url;
+          img.alt = `Image ${index + 1}`;
+          img.classList.add('slide');
+          if (index === 0) {
+            img.classList.add('displaySlide');
+          }
+          imagePreview.appendChild(img);
+        });
+
+        slides = document.querySelectorAll('#imagePreview img');
+
+        // Update the hidden input with the image URL
+        document.getElementById('images').value = JSON.stringify(imageUrls);
+        document.getElementById('upload-icon').style.display = 'none';
+      } else {
+        console.error('Failed to upload images:', xhr.response);
+        alert('Failed to upload images. Please try again.');
+      }
+    };
+
+    xhr.onerror = function () {
+      console.error('Error uploading image');
+      alert('Error uploading image. Please try again.');
+    };
+
+    xhr.send(formData);
+  }
+
+  function showSlide(index) {
+    if (index >= slides.length) {
+      slideIndex = 0;
+    } else if (index < 0) {
+      slideIndex = slides.length - 1;
+    }
+
+    slides.forEach((slide) => {
+      slide.classList.remove('displaySlide');
+    });
+    slides[slideIndex].classList.add('displaySlide');
+  }
+
+  function prevSlide() {
+    clearInterval(intervalId);
+    slideIndex--;
+    showSlide(slideIndex);
+  }
+
+  function nextSlide() {
+    slideIndex++;
+    showSlide(slideIndex);
+  }
+</script>

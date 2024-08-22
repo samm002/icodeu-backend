@@ -6,13 +6,13 @@
   <body id="reportsPage">
     <div id="home">
       <%- include('../../layouts/navbar.ejs') %>
-      <div class="container tm-mt-big tm-mb-big">
+      <div class="container mt-big mb-big">
         <div class="row">
           <div class="col-xl-9 col-lg-10 col-md-12 col-sm-12 mx-auto">
-            <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
+            <div class="bg-primary-dark block block-h-auto">
               <div class="row">
                 <div class="col-12">
-                  <h2 class="tm-block-title d-inline-block">Edit Service</h2>
+                  <h2 class="block-title d-inline-block">Edit Service</h2>
                 </div>
               </div>
               <div class="row">
@@ -46,7 +46,7 @@
                     <div class="form-group mb-3">
                       <label for="type">Type</label>
                       <select
-                        class="custom-select tm-select-accounts"
+                        class="custom-select select-accounts"
                         id="type"
                         value="<%= service.type %>"
                         name="type"
@@ -113,9 +113,9 @@
                         oninput="handleTextareaChange()"
                       ><%= service.features %></textarea>
                     </div>
-                    <div class="tm-product-img-dummy mx-auto">
+                    <div class="product-img-dummy mx-auto">
                       <i
-                        class="fas fa-cloud-upload-alt tm-upload-icon"
+                        class="fas fa-cloud-upload-alt upload-icon"
                         onclick="document.getElementById('fileInput').click();"
                       ></i>
                     </div>

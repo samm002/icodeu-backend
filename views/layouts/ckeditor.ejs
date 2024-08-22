@@ -9,7 +9,7 @@
         (file) =>
           new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
-            xhr.open('POST', 'upload', true);
+            xhr.open('POST', '/api/v1/blogs/upload', true);
             xhr.responseType = 'json';
 
             xhr.onload = () => {
@@ -40,7 +40,7 @@
   }
   ClassicEditor.create(document.querySelector('#editor'), {
     ckfinder: {
-      uploadUrl: 'upload',
+      uploadUrl: '/api/v1/blogs/upload',
     },
   })
     .then((editor) => {

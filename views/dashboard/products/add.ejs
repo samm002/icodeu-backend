@@ -1,130 +1,167 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <%- include('../../layouts/head.ejs') %>
-</head>
-<body id="reportsPage">
-  <div id="home">
-    <%- include('../../layouts/navbar.ejs') %>
-    <div class="container tm-mt-big tm-mb-big">
-      <div class="row">
-        <div class="col-xl-9 col-lg-10 col-md-12 col-sm-12 mx-auto">
-          <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
-            <div class="row">
-              <div class="col-12">
-                <h2 class="tm-block-title d-inline-block">Add Product</h2>
-              </div>
-            </div>
-            <div class="row">
-              <form id="uploadForm" action="/api/v1/products" class="d-flex flex-wrap" method="post" enctype="multipart/form-data">
-                <div class="col-xl-6 col-lg-6 col-md-12">
-                  <div class="form-group mb-3">
-                    <label for="name">Product Name</label>
-                    <input id="name" name="name" type="text" class="form-control validate" required />
-                  </div>
-                  <div class="form-group mb-3">
-                    <label for="description">Description</label>
-                    <textarea class="form-control validate" rows="3" name="description"></textarea>
-                  </div>
-                  <div class="form-group mb-3">
-                    <label for="type">Type</label>
-                    <select class="custom-select tm-select-accounts" id="type" name="type">
-                      <option selected>Select Type</option>
-                      <option value="multi">Multi</option>
-                      <option value="single">Single</option>
-                    </select>
-                  </div>
-                  <div class="form-group mb-3">
-                    <label for="price">Price</label>
-                    <input id="price" name="price" type="number" class="form-control validate" />
-                  </div>
-                  <div class="row">
-                    <div class="form-group mb-3 col-xs-12 col-sm-6">
-                      <label for="discount">Discount</label>
-                      <input id="discount" name="discount" type="number" class="form-control validate" />
-                    </div>
-                    <div class="form-group mb-3 col-xs-12 col-sm-6">
-                      <label for="discountedPrice">Discounted Price</label>
-                      <input id="discountedPrice" name="discountedPrice" type="number" class="form-control validate" />
-                    </div>
-                  </div>
-                </div>
-                <div class="col-xl-6 col-lg-6 col-md-12 mx-auto mb-4">
-                  <div class="form-group mb-3">
-                    <label for="features">Features</label>
-                    <textarea class="form-control validate" rows="3" id="features" name="features"></textarea>
-                  </div>
-                  <div class="tm-product-img-dummy mx-auto">
-                    <i class="fas fa-cloud-upload-alt tm-upload-icon" onclick="document.getElementById('fileInput').click();"></i>
-                  </div>
-                  <div id="imagePreview" style="margin-top: 10px;"></div>
-                  <div class="custom-file mt-3 mb-3">
-                    <input id="fileInput" type="file" name="uploads[]" multiple style="display: none" onchange="uploadImage(event)" />
-                    <input type="button" class="btn btn-primary btn-block mx-auto" value="UPLOAD PRODUCT IMAGE" onclick="document.getElementById('fileInput').click();" />
-                  </div>
-                  <input type="hidden" id="images" name="images">
-                </div>
+  <head>
+    <%- include('../../layouts/head.ejs') %>
+  </head>
+  <body id="reportsPage">
+    <div id="home">
+      <%- include('../../layouts/navbar.ejs') %>
+      <div class="container mt-big mb-big">
+        <div class="row">
+          <div class="col-xl-9 col-lg-10 col-md-12 col-sm-12 mx-auto">
+            <div class="bg-primary-dark block block-h-auto">
+              <div class="row">
                 <div class="col-12">
-                  <button type="submit" class="btn btn-primary btn-block text-uppercase">Add Product Now</button>
+                  <h2 class="block-title d-inline-block">Add Product</h2>
                 </div>
-              </form>
+              </div>
+              <div class="row">
+                <form
+                  id="uploadForm"
+                  action="/api/v1/products"
+                  class="d-flex flex-wrap"
+                  method="post"
+                  enctype="multipart/form-data"
+                >
+                  <div class="col-xl-6 col-lg-6 col-md-12">
+                    <div class="form-group mb-3">
+                      <label for="name">Product Name</label>
+                      <input
+                        id="name"
+                        name="name"
+                        type="text"
+                        class="form-control validate"
+                        required
+                      />
+                    </div>
+                    <div class="form-group mb-3">
+                      <label for="description">Description</label>
+                      <textarea
+                        class="form-control validate"
+                        rows="3"
+                        name="description"
+                      ></textarea>
+                    </div>
+                    <div class="form-group mb-3">
+                      <label for="type">Type</label>
+                      <select
+                        class="custom-select select-accounts"
+                        id="type"
+                        name="type"
+                      >
+                        <option selected>Select Type</option>
+                        <option value="multi">Multi</option>
+                        <option value="single">Single</option>
+                      </select>
+                    </div>
+                    <div class="form-group mb-3">
+                      <label for="price">Price</label>
+                      <input
+                        id="price"
+                        name="price"
+                        type="number"
+                        class="form-control validate"
+                      />
+                    </div>
+                    <div class="row">
+                      <div class="form-group mb-3 col-xs-12 col-sm-6">
+                        <label for="discount">Discount</label>
+                        <input
+                          id="discount"
+                          name="discount"
+                          type="number"
+                          class="form-control validate"
+                        />
+                      </div>
+                      <div class="form-group mb-3 col-xs-12 col-sm-6">
+                        <label for="discountedPrice">Discounted Price</label>
+                        <input
+                          id="discountedPrice"
+                          name="discountedPrice"
+                          type="number"
+                          class="form-control validate"
+                          disabled
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-xl-6 col-lg-6 col-md-12 mx-auto mb-4">
+                    <div class="form-group mb-3">
+                      <label for="features">Features</label>
+                      <textarea
+                        class="form-control validate"
+                        rows="3"
+                        id="features"
+                        oninput="handleTextareaChange()"
+                      ></textarea>
+                      <input type="hidden" id="feature" name="features" />
+                    </div>
+                    <div class="mb-3">
+                      <!-- image dummy -->
+                      <div class="product-img-dummy mx-auto" id="upload-icon">
+                        <i
+                          class="fas fa-cloud-upload-alt upload-icon"
+                          onclick="document.getElementById('fileInput').click();"
+                        ></i>
+                      </div>
+                      <!-- image preview -->
+                      <div class="slider">
+                        <div class="slides" id="imagePreview"></div>
+                        <button
+                          type="button"
+                          class="prev"
+                          onclick="prevSlide()"
+                        >
+                          &#8249;
+                        </button>
+                        <button
+                          type="button"
+                          class="next"
+                          onclick="nextSlide()"
+                        >
+                          &#8250;
+                        </button>
+                      </div>
+                      <!-- image upload url -->
+                      <input type="hidden" id="images" name="images" />
+                      <!-- image upload button -->
+                      <div class="custom-file mt-3 mb-3">
+                        <input
+                          id="fileInput"
+                          type="file"
+                          name="uploads[]"
+                          multiple
+                          style="display: none"
+                          onchange="uploadImage(event)"
+                        />
+                        <input
+                          type="button"
+                          class="btn btn-primary btn-block mx-auto"
+                          value="UPLOAD PRODUCT IMAGE"
+                          onclick="document.getElementById('fileInput').click();"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <button
+                      type="submit"
+                      class="btn btn-primary btn-block text-uppercase"
+                    >
+                      Add Product Now
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      <%- include('../../layouts/footer.ejs') %>
     </div>
 
-    <%- include('../../layouts/footer.ejs') %>
-  </div>
-
-  <%- include('../../layouts/script.ejs') %>
-  <script>
-    function uploadImage(event) {
-      const files = event.target.files;
-      const formData = new FormData();
-
-      Array.from(files).forEach(file => {
-        formData.append('uploads[]', file);
-      });
-
-      const xhr = new XMLHttpRequest();
-      xhr.open('POST', '/api/v1/upload-multiple', true);
-      xhr.responseType = 'json';
-
-      xhr.onload = function() {
-        if (xhr.status >= 200 && xhr.status < 300) {
-          // Get the URL from the response
-          const imageUrls = xhr.response.urls;
-
-          // Log the image URL to the console
-          console.log('Uploaded Image URL:', imageUrls);
-
-          // Update the image preview
-          const imagePreview = document.getElementById('imagePreview');
-          imagePreview.innerHTML = '';
-          imageUrls.forEach(url => {
-            const img = document.createElement('img');
-            img.src = url;
-            img.style.maxWidth = '100%';
-            img.style.maxHeight = '300px';
-            imagePreview.appendChild(img);
-          });
-
-          // Update the hidden input with the image URL
-          document.getElementById('images').value = JSON.stringify(imageUrls);
-        } else {
-          console.error('Failed to upload images:', xhr.response);
-          alert('Failed to upload images. Please try again.');
-        }
-      };
-
-      xhr.onerror = function() {
-        console.error('Error uploading image');
-        alert('Error uploading image. Please try again.');
-      };
-
-      xhr.send(formData);
-    }
-  </script>
-</body>
+    <%- include('../../layouts/script.ejs') %> 
+    <%- include('../../layouts/upload.ejs') %>
+  </body>
 </html>

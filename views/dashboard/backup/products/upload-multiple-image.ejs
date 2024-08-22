@@ -6,20 +6,20 @@
 <body id="reportsPage">
   <div id="home">
     <%- include('../../layouts/navbar.ejs') %>
-    <div class="container tm-mt-big tm-mb-big">
+    <div class="container mt-big mb-big">
       <div class="row">
         <div class="col-xl-9 col-lg-10 col-md-12 col-sm-12 mx-auto">
-          <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
+          <div class="bg-primary-dark block block-h-auto">
             <div class="row">
               <div class="col-12">
-                <h2 class="tm-block-title d-inline-block">Add Product</h2>
+                <h2 class="block-title d-inline-block">Add Product</h2>
               </div>
             </div>
             <div class="row">
               <form id="uploadForm" action="/api/v1/products" method="post" enctype="multipart/form-data">
                 <!-- Other form fields -->
-                  <div class="tm-product-img-dummy mx-auto">
-                    <i class="fas fa-cloud-upload-alt tm-upload-icon" onclick="document.getElementById('fileInput').click();"></i>
+                  <div class="product-img-dummy mx-auto">
+                    <i class="fas fa-cloud-upload-alt upload-icon" onclick="document.getElementById('fileInput').click();"></i>
                   </div>
                   <div class="custom-file mt-3 mb-3">
                     <input id="fileInput" type="file" name="uploads[]" multiple style="display: none" onchange="uploadImages(event)" />

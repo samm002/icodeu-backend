@@ -20,6 +20,7 @@ import { GetUser } from '../common/decorators';
 import { CkEditorResponse, ResponsePayload } from '../common/interfaces';
 import { storage } from '../common/utils';
 import { ResponseStatus } from 'src/common/enums';
+import { FormDataRequest } from 'nestjs-form-data';
 
 // Blogs route is still under testing, no guard applied
 @Controller('blogs')
@@ -82,6 +83,7 @@ export class BlogsController {
     };
   }
 
+  @FormDataRequest()
   @Post()
   // async createBlog(@GetUser('sub') userId: number, dto: CreateBlogDto) { // used when blog fixed
   async createBlogById(
@@ -95,6 +97,7 @@ export class BlogsController {
     };
   }
 
+  @FormDataRequest()
   @Patch(':id')
   async updateBlogById(
     userId: number,

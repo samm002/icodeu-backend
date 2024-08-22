@@ -5,6 +5,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as session from 'express-session';
 import { join } from 'path';
 import * as passport from 'passport';
+import * as methodOverride from 'method-override';
 
 import { AppModule } from './app.module';
 import { closeRedisClient, redisStore } from './common/utils';
@@ -13,7 +14,7 @@ const port = process.env.PORT || 3000;
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-    rawBody: true
+    rawBody: true,
   });
 
   app.setGlobalPrefix('/api/v1', { exclude: ['admin(.*)'] });
@@ -34,6 +35,8 @@ async function bootstrap() {
 
   app.use(passport.initialize());
   app.use(passport.session());
+
+  app.use(methodOverride('_method'));
 
   app.useGlobalPipes(new ValidationPipe());
 
