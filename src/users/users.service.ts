@@ -18,7 +18,7 @@ export class UsersService {
   async showProfile(user: User): Promise<UserData> {
     const roleName = await this.roleService.getRoleName(user.roleId);
 
-    const userData = {
+    const userData: UserData = {
       email: user.email,
       name: user.name,
       address: user.address,

@@ -86,6 +86,9 @@ export class ProductsService {
     const price = updatedPrice ?? product.price;
     const discount = updatedDiscount ?? product.discount;
 
+    const features = typeof dto.features === 'string' ? [] : dto.features;
+    const images = parseStringJSONToArray(String(dto.images));
+
     const discountedPrice =
       price && discount
         ? countDiscount(price, discount)
@@ -96,8 +99,14 @@ export class ProductsService {
         id: productId,
       },
       data: {
-        discountedPrice,
-        ...dto,
+        type: dto.type,
+        name: dto.name,
+        description: dto.description,
+        price,
+        discount,
+        discountedPrice, 
+        features,
+        images,
       },
       include: {
         productPrices: true,

@@ -26,6 +26,7 @@ import { ResponsePayload } from '../common/interfaces';
 import { AuthenticationService } from '../authentication/authentication.service';
 import { BlogsService } from '../blogs/blogs.service';
 import { ProductsService } from '../products/products.service';
+import { RolesService } from '../roles/roles.service';
 import { ServicesService } from '../services/services.service';
 import { CreateUserDto, UpdateUserDto } from '../users/dto';
 import { UsersService } from '../users/users.service';
@@ -39,6 +40,7 @@ export class AdminController {
     private authenticationService: AuthenticationService,
     private blogService: BlogsService,
     private productService: ProductsService,
+    private roleService: RolesService,
     private serviceService: ServicesService,
     private userService: UsersService,
   ) {}
@@ -76,7 +78,8 @@ export class AdminController {
   @Get('users/create')
   @Render('dashboard/users/add')
   async createUserView() {
-    return { title: 'Create User' };
+    const roles = await this.roleService.getAllRole();
+    return { title: 'Create User', roles };
   }
 
   @Get('users/:id')
@@ -90,7 +93,8 @@ export class AdminController {
   @Render('dashboard/users/edit')
   async updateUserView(@Param('id', ParseIntPipe) userId: number) {
     const user = await this.userService.getUserById(userId);
-    return { user, title: `Update User ${userId}` };
+    const roles = await this.roleService.getAllRole();
+    return { user, title: `Update User ${userId}`, roles };
   }
 
   // Product

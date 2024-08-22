@@ -89,6 +89,9 @@ export class PriceDetailsService {
     const price = updatedPrice ?? productDetail.price;
     const discount = updatedDiscount ?? productDetail.discount;
 
+    const features = typeof dto.features === 'string' ? [] : dto.features;
+    const images = parseStringJSONToArray(String(dto.images));
+
     const discountedPrice =
       price && discount
         ? countDiscount(price, discount)
@@ -99,8 +102,13 @@ export class PriceDetailsService {
         id: productPriceDetailId,
       },
       data: {
-        discountedPrice,
-        ...dto,
+        name: dto.name,
+        description: dto.description,
+        price,
+        discount,
+        discountedPrice, 
+        features,
+        images,
       },
     });
   }
@@ -191,6 +199,9 @@ export class PriceDetailsService {
     const price = updatedPrice ?? serviceDetail.price;
     const discount = updatedDiscount ?? serviceDetail.discount;
 
+    const features = typeof dto.features === 'string' ? [] : dto.features;
+    const images = parseStringJSONToArray(String(dto.images));
+
     const discountedPrice =
       price && discount
         ? countDiscount(price, discount)
@@ -201,8 +212,13 @@ export class PriceDetailsService {
         id: servicePriceDetailId,
       },
       data: {
-        discountedPrice,
-        ...dto,
+        name: dto.name,
+        description: dto.description,
+        price,
+        discount,
+        discountedPrice, 
+        features,
+        images,
       },
     });
   }
