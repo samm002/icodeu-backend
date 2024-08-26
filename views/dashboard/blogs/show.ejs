@@ -10,11 +10,15 @@
           <div class="col-xl-9 col-lg-10 col-md-12 col-sm-12 mx-auto">
             <div class="bg-primary-dark block block-h-auto">
               <div class="row">
-                <div class="col-12">
-                  <h2 class="block-title d-inline-block">Add Blog</h2>
+                <div class="col-6">
+                  <h2 class="block-title d-inline-block">Show Blog</h2>
+                </div>
+                <div class="col-6">
+                  <a href="/admin/blogs/<%= blog.id %>/update" class="back-btn-edit">
+                    Want to edit? click me!
+                  </a>
                 </div>
               </div>
-
               <div class="row">
                 <div class="col-12">
                   <div class="form-group mb-3">
@@ -48,5 +52,8 @@
     </div>
 
     <%- include('../../layouts/ckeditor.ejs') %>
+    
+    <script src="/js/jquery-3.3.1.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
   </body>
 </html>

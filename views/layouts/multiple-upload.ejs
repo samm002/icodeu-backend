@@ -2,25 +2,15 @@
   let slides;
   let slideIndex = 0;
   let intervalId = null;
-  
+
   document.addEventListener('DOMContentLoaded', initializeSlider);
-  
+
   function initializeSlider() {
     slides = document.querySelectorAll('.slides img');
     if (slides.length > 0) {
       slides[slideIndex].classList.add('displaySlide');
       intervalId = setInterval(nextSlide, 5000);
     }
-  }
-
-  function handleTextareaChange() {
-    const textareaValue = document.getElementById('features').value;
-    const linesArray = textareaValue.split('\n');
-
-    // Optionally filter out empty lines
-    const filteredArray = linesArray.filter((line) => line.trim() !== '');
-
-    document.getElementById('feature').value = JSON.stringify(filteredArray);
   }
 
   function uploadImage(event) {

@@ -42,9 +42,11 @@
                       </a>
                     </td>
                     <td>
-                      <button class="product-link btn">
-                        <i class="fas fa-trash-alt" style="color: red"></i>
-                      </button>
+                      <form action="/admin/users/<%= item.id %>?_method=delete" method="post">
+                        <button class="product-link btn">
+                          <i class="fas fa-trash-alt" style="color: red"></i>
+                        </button>
+                      </form>
                     </td>
                   </tr>
                 <% }) %>
@@ -55,7 +57,7 @@
           <a
             href="/admin/users/create"
             class="btn btn-primary btn-block text-uppercase mb-3"
-            >Add new service</a
+            >Add new user</a
           >
           <button class="btn btn-primary btn-block text-uppercase">
             Delete selected users
@@ -65,6 +67,7 @@
       <%- include('../../layouts/footer.ejs') %>
     </div>
 
-    <%- include('../../layouts/script.ejs') %>
+    <script src="/js/jquery-3.3.1.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
   </body>
 </html>

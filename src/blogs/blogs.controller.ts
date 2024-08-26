@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   Render,
+  Res,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -21,6 +22,7 @@ import { CkEditorResponse, ResponsePayload } from '../common/interfaces';
 import { storage } from '../common/utils';
 import { ResponseStatus } from 'src/common/enums';
 import { FormDataRequest } from 'nestjs-form-data';
+import { Response } from 'express';
 
 // Blogs route is still under testing, no guard applied
 @Controller('blogs')
@@ -85,16 +87,13 @@ export class BlogsController {
 
   @FormDataRequest()
   @Post()
-  // async createBlog(@GetUser('sub') userId: number, dto: CreateBlogDto) { // used when blog fixed
   async createBlogById(
     userId: number,
     @Body() dto: CreateBlogDto,
-  ): Promise<ResponsePayload<Blog>> {
-    return {
-      status: ResponseStatus.SUCCESS,
-      message: `Create New Blog`,
-      data: await this.blogService.createBlog(userId, dto),
-    };
+    @Res() res: Response,
+  ): Promise<void> {
+    const blog = await this.blogService.createBlog(userId, dto);
+    res.redirect(`/admin/blogs/${blog.id}`);
   }
 
   @FormDataRequest()
@@ -103,24 +102,20 @@ export class BlogsController {
     userId: number,
     @Param('id', ParseIntPipe) blogId: number,
     @Body() dto: UpdateBlogDto,
-  ): Promise<ResponsePayload<Blog>> {
-    return {
-      status: ResponseStatus.SUCCESS,
-      message: `Update Blog by Id ${blogId}`,
-      data: await this.blogService.updateBlogById(userId, blogId, dto),
-    };
+    @Res() res: Response,
+  ): Promise<void> {
+    const blog = await this.blogService.updateBlogById(userId, blogId, dto);
+    res.redirect(`/admin/blogs/${blog.id}`);
   }
 
   @Delete(':id')
   async deleteBlogById(
     userId: number,
     @Param('id', ParseIntPipe) blogId: number,
-  ): Promise<ResponsePayload<Blog>> {
-    return {
-      status: ResponseStatus.SUCCESS,
-      message: `Delete Blog by Id ${blogId}`,
-      data: await this.blogService.deleteBlogById(userId, blogId),
-    };
+    @Res() res: Response,
+  ): Promise<void> {
+    await this.blogService.deleteBlogById(userId, blogId);
+    res.redirect(`/admin/blogs`);
   }
 
   @Post('upload')

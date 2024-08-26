@@ -1,0 +1,39 @@
+<script>
+  function uploadImage(event) {
+    const file = event.target.files[0];
+    const formData = new FormData();
+
+    formData.append('upload', file);
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/v1/upload', true);
+    xhr.responseType = 'json';
+
+    xhr.onload = function () {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        // Get the URL from the response
+        const imageUrl = xhr.response.url;
+
+        // Update the image preview
+        const imagePreview = document.getElementById('containerImage');
+        imagePreview.innerHTML = '';
+        const img = document.createElement('img');
+        img.src = imageUrl;
+        img.alt = 'Image Preview';
+        imagePreview.appendChild(img);
+
+        // Update the hidden input with the image URL
+        document.getElementById('profilePicture').value = imageUrl;
+        document.getElementById('upload-icon').style.display = 'none';
+      } else {
+        alert('Failed to upload images. Please try again.');
+      }
+    };
+
+    xhr.onerror = function () {
+      alert('Error uploading image. Please try again.');
+    };
+
+    xhr.send(formData);
+  }
+</script>

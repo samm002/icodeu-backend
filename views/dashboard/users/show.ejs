@@ -11,8 +11,13 @@
           <div class="col-xl-9 col-lg-10 col-md-12 col-sm-12 mx-auto">
             <div class="bg-primary-dark block block-h-auto">
               <div class="row">
-                <div class="col-12">
+                <div class="col-6">
                   <h2 class="block-title d-inline-block">Show User</h2>
+                </div>
+                <div class="col-6">
+                  <a href="/admin/users/<%= user.id %>/update" class="back-btn-edit">
+                    Want to edit? click me!
+                  </a>
                 </div>
               </div>
               <div class="row">
@@ -61,6 +66,8 @@
                       disabled
                     />
                   </div>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-12 mx-auto mb-4">
                   <div class="form-group mb-3">
                     <label for="password">Password</label>
                     <input
@@ -72,22 +79,11 @@
                       disabled
                     />
                   </div>
-                </div>
-                <div class="col-xl-6 col-lg-6 col-md-12 mx-auto mb-4">
-                  <div class="product-img-dummy mx-auto">
-                    <i
-                      class="fas fa-cloud-upload-alt upload-icon"
-                      onclick="document.getElementById('fileInput').click();"
-                    ></i>
-                  </div>
-                  <div class="custom-file mt-3 mb-3">
-                    <input id="fileInput" type="file" style="display: none" />
-                    <input
-                      type="button"
-                      class="btn btn-primary btn-block mx-auto"
-                      value="UPLOAD PRODUCT IMAGE"
-                      onclick="document.getElementById('fileInput').click();"
-                    />
+                  <div class="mb-3">
+                    <!-- image preview before on onchange -->
+                    <div class="container-image" id="upload-icon">
+                      <img src="<%= user.profilePicture %>" alt="<%= user.name %>">
+                    </div>
                   </div>
                 </div>
               </div>
@@ -99,6 +95,7 @@
       <%- include('../../layouts/footer.ejs') %>
     </div>
 
-    <%- include('../../layouts/script.ejs') %>
+    <script src="/js/jquery-3.3.1.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
   </body>
 </html>

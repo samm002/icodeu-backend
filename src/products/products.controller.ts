@@ -73,11 +73,9 @@ export class ProductsController {
   @Delete(':id')
   async deleteProductById(
     @Param('id', ParseIntPipe) productId: number,
-  ): Promise<ResponsePayload<Product>> {
-    return {
-      status: ResponseStatus.SUCCESS,
-      message: `Delete Product by id ${productId}`,
-      data: await this.productService.deleteProductById(productId),
-    };
+    @Res() res: Response,
+  ): Promise<void> {
+    await this.productService.deleteProductById(productId);
+    res.redirect(`/admin/products`);
   }
 }

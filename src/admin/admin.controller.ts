@@ -134,7 +134,7 @@ export class AdminController {
   }
 
   @Get('services/create')
-  @Render('dashboard/services/index')
+  @Render('dashboard/services/add')
   async createServiceView(@GetUser('name') name: string) {
     return { title: 'Create Service' };
   }
@@ -178,7 +178,7 @@ export class AdminController {
   @Render('dashboard/blogs/edit')
   async updateBlogView(@Param('id', ParseIntPipe) blogId: number) {
     const blog = await this.blogService.getBlogById(blogId);
-    return { blog, title: `Update bBog ${blogId}` };
+    return { blog, title: `Update blog ${blogId}` };
   }
 
   // Price Detail?

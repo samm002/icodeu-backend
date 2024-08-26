@@ -17,7 +17,7 @@
               </div>
               <div class="row">
                 <form
-                  action="/api/v1/users"
+                  action="/admin/users"
                   class="d-flex flex-wrap"
                   method="post"
                   enctype="multipart/form-data"
@@ -63,6 +63,8 @@
                         required
                       />
                     </div>
+                  </div>
+                  <div class="col-xl-6 col-lg-6 col-md-12 mx-auto mb-4">
                     <div class="row">
                       <div class="form-group mb-3 col-xs-12 col-sm-6">
                         <label for="password">Password</label>
@@ -75,32 +77,43 @@
                         />
                       </div>
                       <div class="form-group mb-3 col-xs-12 col-sm-6">
-                        <label for="password">Confirm Password</label>
+                        <label for="confirmPassword">Confirm Password</label>
                         <input
-                          id="password"
-                          name="password"
+                          id="confirmPassword"
+                          name="confirmPassword"
                           type="password"
                           class="form-control validate"
-                          required
                         />
                       </div>
                     </div>
-                  </div>
-                  <div class="col-xl-6 col-lg-6 col-md-12 mx-auto mb-4">
-                    <div class="product-img-dummy mx-auto">
-                      <i
-                        class="fas fa-cloud-upload-alt upload-icon"
-                        onclick="document.getElementById('fileInput').click();"
-                      ></i>
-                    </div>
-                    <div class="custom-file mt-3 mb-3">
-                      <input id="fileInput" type="file" style="display: none" />
-                      <input
-                        type="button"
-                        class="btn btn-primary btn-block mx-auto"
-                        value="UPLOAD PRODUCT IMAGE"
-                        onclick="document.getElementById('fileInput').click();"
-                      />
+                    <div class="mb-3">
+                      <!-- image dummy -->
+                      <div class="product-img-dummy mx-auto" id="upload-icon">
+                        <i
+                          class="fas fa-cloud-upload-alt upload-icon"
+                          onclick="document.getElementById('fileInput').click();"
+                        ></i>
+                      </div>
+                      <!-- image preview -->
+                      <div class="container-image" id="containerImage"></div>
+                      <!-- image upload url -->
+                      <input type="hidden" id="profilePicture" name="profilePicture" />
+                      <!-- image upload button -->
+                      <div class="custom-file mt-3 mb-3">
+                        <input
+                          id="fileInput"
+                          type="file"
+                          name="upload"
+                          style="display: none"
+                          onchange="uploadImage(event)"
+                        />
+                        <input
+                          type="button"
+                          class="btn btn-primary btn-block mx-auto"
+                          value="UPLOAD USER IMAGE"
+                          onclick="document.getElementById('fileInput').click();"
+                        />
+                      </div>
                     </div>
                   </div>
                   <div class="col-12">
@@ -121,6 +134,9 @@
       <%- include('../../layouts/footer.ejs') %>
     </div>
 
-    <%- include('../../layouts/script.ejs') %>
+    <%- include('../../layouts/single-upload.ejs') %>
+    
+    <script src="/js/jquery-3.3.1.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
   </body>
 </html>

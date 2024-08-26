@@ -1,3 +1,13 @@
+<script src="/js/jquery-3.3.1.min.js"></script>
+<!-- https://jquery.com/download/ -->
+<script src="/js/bootstrap.min.js"></script>
+<!-- https://getbootstrap.com/ -->
+<script src="/js/moment.min.js"></script>
+<!-- https://momentjs.com/ -->
+<script src="/js/Chart.min.js"></script>
+<!-- http://www.chartjs.org/docs/latest/ -->
+<script src="/js/tooplate-scripts.js"></script>
+
 <script>
   // Function to remove an input field
   function removeInput(index) {
@@ -10,11 +20,11 @@
     const container = document.getElementById('containerInput');
     const index = container.children.length;
     const newInput = `
-            <div class="d-flex" data-index="${index}">
-                <input type="text" name="features[]" class="form-control">
-                <button type="button" class="btn-remove-features" onclick="removeInput(${index})">-</button>
-            </div>
-        `;
+          <div class="d-flex" data-index="${index}">
+              <input type="text" name="features[]" class="form-control">
+              <button type="button" class="btn-remove-features" onclick="removeInput(${index})">-</button>
+          </div>
+      `;
     container.insertAdjacentHTML('beforeend', newInput);
   });
 
@@ -43,4 +53,31 @@
 
     document.getElementById('discountedPrice').value = result.toString();
   }
+</script>
+
+<script>
+  Chart.defaults.global.defaultFontColor = 'white';
+  let ctxLine,
+    ctxBar,
+    ctxPie,
+    optionsLine,
+    optionsBar,
+    optionsPie,
+    configLine,
+    configBar,
+    configPie,
+    lineChart,
+    barChart,
+    pieChart;
+  // DOM is ready
+  $(function () {
+    drawLineChart(); // Line Chart
+    drawBarChart(); // Bar Chart
+    drawPieChart(); // Pie Chart
+
+    $(window).resize(function () {
+      updateLineChart();
+      updateBarChart();
+    });
+  });
 </script>

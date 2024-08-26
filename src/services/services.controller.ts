@@ -73,11 +73,9 @@ export class ServicesController {
   @Delete(':id')
   async deleteServiceById(
     @Param('id', ParseIntPipe) serviceId: number,
-  ): Promise<ResponsePayload<Service>> {
-    return {
-      status: ResponseStatus.SUCCESS,
-      message: `Delete Service by id ${serviceId}`,
-      data: await this.serviceService.deleteServiceById(serviceId),
-    };
+    @Res() res: Response,
+  ): Promise<void> {
+    await this.serviceService.deleteServiceById(serviceId);
+    res.redirect(`/admin/services`);
   }
 }
