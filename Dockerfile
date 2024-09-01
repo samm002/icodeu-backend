@@ -17,6 +17,9 @@ RUN npm install
 COPY prisma ./prisma
 RUN npx prisma generate
 
+# Applying latest prisma migration (always up to date with latest schema)
+RUN npx prisma migrate deloy
+
 # Bundle app source
 COPY . .
 

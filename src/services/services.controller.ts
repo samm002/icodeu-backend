@@ -25,7 +25,7 @@ import { ResponsePayload } from '../common/interfaces';
 @Roles([Role.ADMIN, Role.PRODUCT_MANAGER])
 @Controller('services')
 export class ServicesController {
-  constructor(private readonly serviceService: ServicesService) {}
+  constructor(private serviceService: ServicesService) {}
 
   @Public()
   @Get()

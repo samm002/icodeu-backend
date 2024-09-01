@@ -7,8 +7,8 @@ import { RolesService } from '../../roles/roles.service';
 @Injectable()
 export class RolesGuard implements CanActivate {
   constructor(
-    private readonly reflector: Reflector,
-    private readonly roleService: RolesService,
+    private reflector: Reflector,
+    private roleService: RolesService,
   ) {}
 
   matchRoles(roles: string[], userRole: string): boolean {

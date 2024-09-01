@@ -99,7 +99,7 @@ export class RolesService {
   async getRoleId(roleName: string): Promise<number> {
     const role = await this.prisma.role.findUnique({
       where: {
-        name: roleName,
+        name: roleName.toLowerCase(),
       },
     });
 

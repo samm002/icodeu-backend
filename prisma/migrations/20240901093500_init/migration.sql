@@ -37,6 +37,7 @@ CREATE TABLE "priceDetails" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "name" TEXT NOT NULL,
+    "slug" TEXT,
     "description" TEXT,
     "price" DOUBLE PRECISION NOT NULL,
     "discount" DOUBLE PRECISION,
@@ -56,6 +57,7 @@ CREATE TABLE "products" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "type" "ProductType" NOT NULL,
     "name" TEXT NOT NULL,
+    "slug" TEXT,
     "description" TEXT,
     "price" DOUBLE PRECISION,
     "discount" DOUBLE PRECISION,
@@ -73,6 +75,7 @@ CREATE TABLE "services" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "type" "ServiceType" NOT NULL,
     "name" TEXT NOT NULL,
+    "slug" TEXT,
     "description" TEXT,
     "price" DOUBLE PRECISION,
     "discount" DOUBLE PRECISION,
@@ -89,8 +92,9 @@ CREATE TABLE "blogs" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "title" TEXT NOT NULL,
+    "slug" TEXT,
     "content" TEXT NOT NULL,
-    "author" INTEGER NOT NULL,
+    "authorId" INTEGER NOT NULL,
 
     CONSTRAINT "blogs_pkey" PRIMARY KEY ("id")
 );
@@ -111,4 +115,4 @@ ALTER TABLE "priceDetails" ADD CONSTRAINT "priceDetails_productId_fkey" FOREIGN 
 ALTER TABLE "priceDetails" ADD CONSTRAINT "priceDetails_serviceId_fkey" FOREIGN KEY ("serviceId") REFERENCES "services"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "blogs" ADD CONSTRAINT "blogs_author_fkey" FOREIGN KEY ("author") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "blogs" ADD CONSTRAINT "blogs_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;

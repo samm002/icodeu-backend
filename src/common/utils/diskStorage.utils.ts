@@ -1,5 +1,5 @@
-import { diskStorage } from 'multer';
 import * as fs from 'fs';
+import { diskStorage } from 'multer';
 import * as path from 'path';
 
 import { sanitizeString } from './sanitizeString.utils';

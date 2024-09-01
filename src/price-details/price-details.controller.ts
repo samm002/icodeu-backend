@@ -7,7 +7,6 @@ import {
   ParseIntPipe,
   Patch,
   Post,
-  Res,
   UseGuards,
 } from '@nestjs/common';
 import { PriceDetail } from '@prisma/client';
@@ -18,13 +17,12 @@ import { Public, Roles } from '../common/decorators';
 import { ResponseStatus, Role } from '../common/enums';
 import { JwtGuard, RolesGuard } from '../common/guards';
 import { ResponsePayload } from '../common/interfaces';
-import { Response } from 'express';
 
 @UseGuards(JwtGuard, RolesGuard)
 @Roles([Role.ADMIN, Role.PRODUCT_MANAGER])
 @Controller()
 export class PriceDetailsController {
-  constructor(private readonly priceDetailService: PriceDetailsService) {}
+  constructor(private priceDetailService: PriceDetailsService) {}
 
   // Product Price Detail
   @Public()
@@ -34,7 +32,7 @@ export class PriceDetailsController {
   ): Promise<ResponsePayload<PriceDetail[]>> {
     return {
       status: ResponseStatus.SUCCESS,
-      message: `Get All Product Price Detail in Product id ${productId}`,
+      message: `Get All Product Price Detail in Product id : ${productId}`,
       data: await this.priceDetailService.getAllProductPriceDetail(productId),
     };
   }
@@ -47,7 +45,7 @@ export class PriceDetailsController {
   ): Promise<ResponsePayload<PriceDetail>> {
     return {
       status: ResponseStatus.SUCCESS,
-      message: `Get All Product Price Detail by id : ${productPriceId} in Product id ${productId}`,
+      message: `Get Price Detail by id : ${productPriceId} in Product id : ${productId}`,
       data: await this.priceDetailService.getProductPriceDetailById(
         productId,
         productPriceId,
@@ -68,7 +66,7 @@ export class PriceDetailsController {
     // res.redirect(`/admin/productPriceDetail/${productPriceDetail.id}`);
     return {
       status: ResponseStatus.SUCCESS,
-      message: `Create new Product Price Detail in Product id ${productId}`,
+      message: `Create new Product Price Detail in Product id : ${productId}`,
       data: await this.priceDetailService.createProductPriceDetail(
         productId,
         dto,
@@ -91,7 +89,7 @@ export class PriceDetailsController {
     // res.redirect(`/admin/productPriceDetail/${productPriceDetail.id}`);
     return {
       status: ResponseStatus.SUCCESS,
-      message: `Update Product Price Detail id ${productPriceDetailId} in Product id ${productId}`,
+      message: `Update Price Detail id : ${productPriceDetailId} in Product id : ${productId}`,
       data: await this.priceDetailService.updateProductPriceDetailById(
         productId,
         productPriceDetailId,
@@ -107,7 +105,7 @@ export class PriceDetailsController {
   ): Promise<ResponsePayload<PriceDetail>> {
     return {
       status: ResponseStatus.SUCCESS,
-      message: `Delete Product Price Detail id ${productPriceDetailId} in Product id ${productId}`,
+      message: `Delete Price Detail id : ${productPriceDetailId} in Product id : ${productId}`,
       data: await this.priceDetailService.deleteProductPriceById(
         productId,
         productPriceDetailId,
@@ -123,7 +121,7 @@ export class PriceDetailsController {
   ): Promise<ResponsePayload<PriceDetail[]>> {
     return {
       status: ResponseStatus.SUCCESS,
-      message: `Get All Service Price Detail in Service id ${serviceId}`,
+      message: `Get All Price Detail in Service id : ${serviceId}`,
       data: await this.priceDetailService.getAllServicePriceDetail(serviceId),
     };
   }
@@ -136,7 +134,7 @@ export class PriceDetailsController {
   ): Promise<ResponsePayload<PriceDetail>> {
     return {
       status: ResponseStatus.SUCCESS,
-      message: `Get All Service Price Detail by id : ${servicePriceId} in Service id ${serviceId}`,
+      message: `Get Service Price Detail by id : ${servicePriceId} in Service id : ${serviceId}`,
       data: await this.priceDetailService.getServicePriceDetailById(
         serviceId,
         servicePriceId,
@@ -151,13 +149,13 @@ export class PriceDetailsController {
     // @Res() res: Response,
   ): Promise<ResponsePayload<PriceDetail>> {
     return {
-    // const productPriceDetail = await this.priceDetailService.createProductPriceDetail(
-    //   productId,
-    //   dto,
-    // );
-    // res.redirect(`/admin/productPriceDetail/${productPriceDetail.id}`);
+      // const productPriceDetail = await this.priceDetailService.createProductPriceDetail(
+      //   productId,
+      //   dto,
+      // );
+      // res.redirect(`/admin/productPriceDetail/${productPriceDetail.id}`);
       status: ResponseStatus.SUCCESS,
-      message: `Create new Service Price Detail in Service id ${serviceId}`,
+      message: `Create new Service Price Detail in Service id : ${serviceId}`,
       data: await this.priceDetailService.createServicePriceDetail(
         serviceId,
         dto,
@@ -180,7 +178,7 @@ export class PriceDetailsController {
     // res.redirect(`/admin/servicePriceDetail/${servicePriceDetail.id}`);
     return {
       status: ResponseStatus.SUCCESS,
-      message: `Update Service Price Detail id ${servicePriceDetailId} in Service id ${serviceId}`,
+      message: `Update Price Detail id : ${servicePriceDetailId} in Service id : ${serviceId}`,
       data: await this.priceDetailService.updateServicePriceDetailById(
         serviceId,
         servicePriceDetailId,
@@ -196,7 +194,7 @@ export class PriceDetailsController {
   ): Promise<ResponsePayload<PriceDetail>> {
     return {
       status: ResponseStatus.SUCCESS,
-      message: `Delete Service Price Detail id ${servicePriceDetailId} in Service id ${serviceId}`,
+      message: `Delete Price Detail id : ${servicePriceDetailId} in Service id : ${serviceId}`,
       data: await this.priceDetailService.deleteServicePriceById(
         serviceId,
         servicePriceDetailId,

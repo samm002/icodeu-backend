@@ -94,4 +94,43 @@ export class CommonService {
 
     return { urls };
   }
+
+  countDiscount(price: number, discount: number): number {
+    const discountPrice = price * (discount / 100);
+
+    return price - discountPrice;
+  }
+
+  generateSlug(title: string): string {
+    return title
+      .toLowerCase() // Convert to lowercase
+      .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
+      .trim() // Trim whitespace from both ends
+      .replace(/\s+/g, '-') // Replace spaces with hyphens ('-')
+      .replace(/-+$/g, ''); // Remove trailing hyphens
+  }
+
+  parseStringJSONToArray(jsonString: string): string[] {
+    try {
+      if (!jsonString || jsonString === '') {
+        return [];
+      }
+
+      const parsed = JSON.parse(jsonString);
+
+      if (Array.isArray(parsed)) {
+        return parsed as string[];
+      } else {
+        return [jsonString];
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  transformToNumber(...args: (string | number | undefined)[]): number[] {
+    return args
+      .map((arg) => (arg !== '' ? Number(arg) : null))
+      .filter((num) => !isNaN(num));
+  }
 }

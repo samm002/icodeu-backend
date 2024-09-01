@@ -6,16 +6,15 @@ import {
 import { Product } from '@prisma/client';
 
 import { CreateProductDto, UpdateProductDto } from './dto';
+import { CommonService } from '../common/common.service';
 import { PrismaService } from '../prisma/prisma.service';
-import {
-  countDiscount,
-  parseStringJSONToArray,
-  transformToNumber,
-} from '../common/utils';
 
 @Injectable()
 export class ProductsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private common: CommonService,
+  ) {}
 
   async getAllProduct(): Promise<Product[]> {
     const products = await this.prisma.product.findMany({
@@ -39,24 +38,30 @@ export class ProductsService {
       );
     }
 
-    const [price, discount] = transformToNumber(dto.price, dto.discount);
+    const [price, discount] = this.common.transformToNumber(
+      dto.price,
+      dto.discount,
+    );
 
     const features =
       typeof dto.features === 'string'
         ? dto.features === ''
           ? []
-          : parseStringJSONToArray(dto.features)
+          : this.common.parseStringJSONToArray(dto.features)
         : dto.features;
 
-    const images = parseStringJSONToArray(String(dto.images));
+    const images = this.common.parseStringJSONToArray(String(dto.images));
 
     const discountedPrice =
-      dto.price && dto.discount ? countDiscount(price, discount) : null;
+      dto.price && dto.discount
+        ? this.common.countDiscount(price, discount)
+        : null;
 
     const product = await this.prisma.product.create({
       data: {
         type: dto.type,
         name: dto.name,
+        slug: this.common.generateSlug(dto.name),
         description: dto.description,
         price,
         discount,
@@ -74,6 +79,7 @@ export class ProductsService {
     dto: UpdateProductDto,
   ): Promise<Product> {
     const product = await this.findProductById(productId);
+
     if (
       dto.type !== 'multi' &&
       product.type !== 'multi' &&
@@ -83,7 +89,7 @@ export class ProductsService {
       throw new BadRequestException('Please input price');
     }
 
-    const [updatedPrice, updatedDiscount] = transformToNumber(
+    const [updatedPrice, updatedDiscount] = this.common.transformToNumber(
       dto.price,
       dto.discount,
     );
@@ -95,17 +101,17 @@ export class ProductsService {
       ? typeof dto.features === 'string'
         ? dto.features === ''
           ? []
-          : parseStringJSONToArray(String(dto.features))
+          : this.common.parseStringJSONToArray(String(dto.features))
         : dto.features
       : product.features;
 
     const images = dto.images
-      ? parseStringJSONToArray(String(dto.images))
+      ? this.common.parseStringJSONToArray(String(dto.images))
       : product.images;
 
     const discountedPrice =
       price && discount
-        ? countDiscount(price, discount)
+        ? this.common.countDiscount(price, discount)
         : (product.discountedPrice ?? null);
 
     return await this.prisma.product.update({
@@ -115,6 +121,7 @@ export class ProductsService {
       data: {
         type: dto.type,
         name: dto.name,
+        slug: dto.name ? this.common.generateSlug(dto.name) : product.slug,
         description: dto.description,
         price,
         discount,
@@ -129,11 +136,11 @@ export class ProductsService {
   }
 
   async deleteProductById(productId: number): Promise<Product> {
-    await this.findProductById(productId);
+    const product = await this.findProductById(productId);
 
     return await this.prisma.product.delete({
       where: {
-        id: productId,
+        id: product.id,
       },
     });
   }

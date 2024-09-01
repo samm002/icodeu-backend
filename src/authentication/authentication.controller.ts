@@ -17,7 +17,7 @@ import { CreateUserDto } from '../users/dto/create-user.dto';
 
 @Controller('auth')
 export class AuthenticationController {
-  constructor(private readonly authenticationService: AuthenticationService) {}
+  constructor(private authenticationService: AuthenticationService) {}
 
   @Post('register')
   async register(@Body() dto: CreateUserDto): Promise<ResponsePayload<Tokens>> {

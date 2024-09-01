@@ -64,7 +64,8 @@ model PriceDetail {
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 
-  name              String 
+  name              String
+  slug              String?
   description       String?
   price             Float
   discount          Float?
@@ -88,6 +89,7 @@ model Product {
 
   type              ProductType
   name              String
+  slug              String?
   description       String?
   price             Float?
   discount          Float?
@@ -106,7 +108,8 @@ model Service {
   updatedAt         DateTime  @updatedAt
 
   type              ServiceType
-  name              String 
+  name              String
+  slug              String?
   description       String?
   price             Float?
   discount          Float?
@@ -124,11 +127,12 @@ model Blog {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  title       String 
+  title       String
+  slug        String?
   content     String
 
-  author      Int
-  user        User      @relation(fields: [author], references: [id], onDelete: Cascade)
+  authorId    Int
+  author      User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
   @@map("blogs")
 }

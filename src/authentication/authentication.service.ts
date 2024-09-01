@@ -19,9 +19,9 @@ import { RolesService } from '../roles/roles.service';
 @Injectable()
 export class AuthenticationService {
   constructor(
-    private prisma: PrismaService,
-    private jwt: JwtService,
     private config: ConfigService,
+    private jwt: JwtService,
+    private prisma: PrismaService,
     private roleService: RolesService,
   ) {}
 

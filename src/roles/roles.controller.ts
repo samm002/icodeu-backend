@@ -22,7 +22,7 @@ import { ResponsePayload } from '../common/interfaces';
 @Roles([ROLE.ADMIN])
 @Controller('roles')
 export class RolesController {
-  constructor(private readonly rolesService: RolesService) {}
+  constructor(private rolesService: RolesService) {}
 
   @Get()
   async getAllRole(): Promise<ResponsePayload<Role[]>> {

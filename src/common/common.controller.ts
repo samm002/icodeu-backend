@@ -6,7 +6,7 @@ import { storage } from '../common/utils';
 
 @Controller()
 export class CommonController {
-  constructor(private readonly commonService: CommonService) {}
+  constructor(private commonService: CommonService) {}
 
   @Post('upload')
   @UseInterceptors(FileInterceptor('upload', { storage }))

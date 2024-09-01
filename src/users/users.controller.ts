@@ -1,20 +1,29 @@
-import { Body, Controller, Get, Patch, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  ParseIntPipe,
+  Patch,
+  UseGuards,
+} from '@nestjs/common';
 import { User } from '@prisma/client';
 
-import { UpdateUserDto } from './dto/update-user.dto';
+import { ResponseUserDto, UpdateUserDto } from './dto';
 import { UsersService } from './users.service';
 import { GetUser } from '../common/decorators/get-user.decorator';
 import { ResponseStatus } from '../common/enums';
-import { JwtGuard } from '../common/guards/jwt.at.guard';
-import { ResponsePayload, UserData } from '../common/interfaces';
+import { JwtGuard } from '../common/guards';
+import { ResponsePayload, UserWithRole } from '../common/interfaces';
 
 @UseGuards(JwtGuard)
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private usersService: UsersService) {}
 
   @Get('profile')
-  async showProfile(@GetUser() user: User): Promise<ResponsePayload<UserData>> {
+  async showProfile(
+    @GetUser() user: UserWithRole,
+  ): Promise<ResponsePayload<ResponseUserDto>> {
     return {
       status: ResponseStatus.SUCCESS,
       message: `Show Profile`,
@@ -24,9 +33,9 @@ export class UsersController {
 
   @Patch('profile')
   async editProfile(
-    @GetUser('id') userId: number,
+    @GetUser('id', ParseIntPipe) userId: number,
     @Body() dto: UpdateUserDto,
-  ): Promise<ResponsePayload<UserData>> {
+  ): Promise<ResponsePayload<ResponseUserDto>> {
     return {
       status: ResponseStatus.SUCCESS,
       message: `Show Profile`,
