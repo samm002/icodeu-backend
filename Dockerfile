@@ -26,8 +26,6 @@ COPY . .
 RUN npm run build
 
 # Expose port
-EXPOSE 80
-EXPOSE 443
 EXPOSE 3000
 
 # Start the server using the production build
