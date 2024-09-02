@@ -29,4 +29,4 @@ RUN npm run build
 EXPOSE 3000
 
 # Start the server using the production build
-CMD [ "npm", "start:prod" ]
+CMD [ "npm", "run", "start:prod" ]
