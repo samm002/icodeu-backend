@@ -51,9 +51,9 @@ on:
     branches: [ "main" ]
 
 env:
-  PROJECT_ID: icodeu-431422 # TODO: update Google Cloud project id
-  SERVICE: icodeu-backend # TODO: update Cloud Run service name
-  REGION: us-central1 # TODO: update Cloud Run service region
+  PROJECT_ID: icodeu-431422 # Google Cloud project id
+  SERVICE: icodeu-backend # Cloud Run service name
+  REGION: us-central1 # Cloud Run service region
   
 jobs:
   deploy:
