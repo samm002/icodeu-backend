@@ -5,7 +5,9 @@ FROM node:20
 WORKDIR /usr/src/app
 
 # Listen to all network interface
-ENV HOST 0.0.0.0
+ENV HOST=0.0.0.0
+
+# ENV DATABASE_URL=${DATABASE_URL}
 
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 COPY package*.json ./
@@ -17,11 +19,11 @@ RUN npm install
 COPY prisma ./prisma
 RUN npx prisma generate
 
-# Applying latest prisma migration (always up to date with latest schema)
-RUN npx prisma migrate deloy
-
 # Bundle app source
 COPY . .
+
+# Applying the latest migration
+RUN npx prisma migrate deploy
 
 # Creates a "dist" folder with the production build
 RUN npm run build

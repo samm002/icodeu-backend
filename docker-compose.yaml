@@ -8,3 +8,10 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123
       POSTGRES_DB: icodeu
+
+  # app:
+  #   build: .
+  #   env_file:
+  #     - .env
+  #   ports:
+  #     - "3000:3000"
