@@ -28,8 +28,13 @@ RUN npx prisma migrate deploy
 # Creates a "dist" folder with the production build
 RUN npm run build
 
+# Copy the entrypoint script
+COPY ./start.sh /usr/src/app/start.sh
+RUN chmod +x /usr/src/app/start.sh
+
 # Expose port
 EXPOSE 3000
+EXPOSE 443
 
-# Start the server using the production build
-CMD [ "node", "dist/main.js" ]
+# Start the server with the entrypoint script
+CMD [ "/usr/src/app/entrypoint.sh" ]
